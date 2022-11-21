@@ -15,6 +15,16 @@ def login_admin():
     return redirect('/admin')
 
 
+@app.route("/")
+def index():
+    location = LoadData.getLocation()
+    des = request.args.get('destination')
+    dep = request.args.get('departure')
+    time = request.args.get('date')
+    flight = LoadData.get_flight(departure=dep, destination=des, time=time)
+    return render_template("Search.html", location = location, flight= flight)
+
+
 @login.user_loader
 def load_user(user_id):
     return LoadData.get_user_by_id(user_id)
