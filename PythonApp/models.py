@@ -2,6 +2,7 @@ import datetime
 import hashlib
 
 from sqlalchemy import Column, Integer, String, Text, Boolean, Float, ForeignKey, Enum, DATETIME, DATE
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -174,12 +175,12 @@ class StopOver(BaseModel):
 class Schedule(BaseModel):
     __tablename__ = 'schedule'
     id = Column(Integer, ForeignKey(Flight.id), primary_key=True)
-    flight_time = Column(DATETIME, nullable=False)
+    time = Column(DATETIME, nullable=False)
     num_o_Fseat = Column(Integer, nullable=False)
     num_o_Sseat = Column(Integer, nullable=False)
 
     def __str__(self):
-        return str(self.flight_time)
+        return self.time
 
 
 class Type(BaseModel):
@@ -212,7 +213,6 @@ class Airplane(BaseModel):
 class Seat(BaseModel):
     __tablename__ = 'seat'
     seatName = Column(String(50), nullable=False)
-    is_taken = Column(Boolean, default=False)
     Sclass = Column(Enum(SeatClass), default=SeatClass.SECOND)
 
     airplane_id = Column(Integer, ForeignKey(Airplane.id), nullable=False)
@@ -398,29 +398,29 @@ if __name__ == '__main__':
 
         # Tao lich bay
 
-        sc1 = Schedule(id=f1.id, flight_time=datetime(2023, 10, 11, 9, 10, 0, 0),
+        sc1 = Schedule(id = f1.id, time=datetime(2023, 10, 11, 9, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc2 = Schedule(id=f2.id, flight_time=datetime(2023, 1, 11, 22, 10, 0, 0),
+        sc2 = Schedule(id = f2.id,time=datetime(2023, 1, 11, 22, 10, 0, 0),
                        num_o_Fseat=5, num_o_Sseat=12)
-        sc3 = Schedule(id=f3.id, flight_time=datetime(2022, 12, 30, 8, 10, 0, 0),
+        sc3 = Schedule(id = f3.id,time=datetime(2022, 12, 30, 8, 10, 0, 0),
                        num_o_Fseat=20, num_o_Sseat=10)
-        sc4 = Schedule(id=f4.id, flight_time=datetime(2023, 3, 11, 12, 0, 0, 0),
+        sc4 = Schedule(id = f4.id, time=datetime(2023, 3, 11, 12, 0, 0, 0),
                        num_o_Fseat=0, num_o_Sseat=30)
-        sc5 = Schedule(id=f5.id, flight_time=datetime(2023, 10, 11, 8, 10, 0, 0),
+        sc5 = Schedule(id = f5.id,time=datetime(2023, 10, 11, 8, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc6 = Schedule(id=f6.id, flight_time=datetime(2023, 3, 11, 10, 10, 0, 0),
+        sc6 = Schedule(id = f6.id,time=datetime(2023, 3, 11, 10, 10, 0, 0),
                        num_o_Fseat=2, num_o_Sseat=20)
-        sc7 = Schedule(id=f7.id, flight_time=datetime(2023, 4, 14, 4, 10, 0, 0),
+        sc7 = Schedule(id = f7.id,time=datetime(2023, 4, 14, 4, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc8 = Schedule(id=f8.id, flight_time=datetime(2023, 1, 1, 0, 10, 0, 0),
+        sc8 = Schedule(id = f8.id,time=datetime(2023, 1, 1, 0, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc9 = Schedule(id=f9.id, flight_time=datetime(2023, 9, 9, 5, 10, 0, 0),
+        sc9 = Schedule(id = f9.id,time=datetime(2023, 9, 9, 5, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc10 = Schedule(id=f10.id, flight_time=datetime(2023, 6, 7, 21, 10, 0, 0),
+        sc10 = Schedule(id = f10.id,time=datetime(2023, 6, 7, 21, 10, 0, 0),
                         num_o_Fseat=10, num_o_Sseat=10)
-        sc11 = Schedule(id=f11.id, flight_time=datetime(2023, 5, 11, 18, 1, 0, 0),
+        sc11 = Schedule(id = f11.id,time=datetime(2023, 5, 11, 18, 1, 0, 0),
                         num_o_Fseat=10, num_o_Sseat=10)
-        sc12 = Schedule(id=f12.id, flight_time=datetime(2023, 3, 3, 23, 10, 0, 0),
+        sc12 = Schedule(id = f12.id, time=datetime(2023, 3, 3, 23, 10, 0, 0),
                         num_o_Fseat=10, num_o_Sseat=9)
 
         db.session.add_all([sc1, sc2, sc3, sc4, sc5, sc6,
