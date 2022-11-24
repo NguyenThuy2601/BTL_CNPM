@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="7ff94f17-cb89-4b11-a760-8f98cce99a79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/PythonApp/templates/details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonApp/templates/ticket.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/BTL_CNPM.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BTL_CNPM.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonApp/LoadData.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/LoadData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonApp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PythonApp/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonApp/templates/Search.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/templates/Search.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PythonApp/templates/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/templates/layout/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonApp/templates/ticket.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/templates/ticket.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,14 +39,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/CamHa/OneDrive/Documents/BTL_CNPM&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/BTL_CNPM",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\CamHa\OneDrive\Documents\BTL_CNPM\PythonApp\templates" />
@@ -116,8 +120,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.LoadData" />
         <item itemvalue="Python.models" />
+        <item itemvalue="Python.LoadData" />
       </list>
     </recent_temporary>
   </component>
@@ -152,13 +156,8 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/PythonApp/admin.py</url>
-          <line>101</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/PythonApp/main.py</url>
-          <line>69</line>
+          <line>73</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
