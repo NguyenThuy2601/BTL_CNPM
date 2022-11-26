@@ -1,6 +1,7 @@
 import datetime
 from PythonApp import app, db
-from PythonApp.models import Account, Flight, AirRoute, AirPort, Schedule, StopOver
+from PythonApp.models import Account, Flight, AirRoute, AirPort, Schedule, StopOver, User
+from datetime import datetime
 import hashlib
 
 
@@ -49,11 +50,16 @@ def get_stopover_by_airroute_id(id):
 def getLocation():
     return AirPort.query.all()
 
+
 def getTicketInfo(l):
     a = ""
     for i in l:
         a += i
         print(a)
+
+
+def createUser():
+    pass
 
 if __name__ == "__main__":
     with app.app_context():
@@ -61,9 +67,8 @@ if __name__ == "__main__":
             # print(get_airroute_id_by_name('Đà Nẵng', 'Đà Nẵng'))
             # print(get_flight('Đà Nẵng', 'Đà Nẵng'))
             f = get_flight_by_id(1)
-            f = f.airroute.rule.selling_ticket_hour
-            print(f)
+            # f = f.airroute.rule.selling_ticket_hour
+            print(f.airroute.stop_over[0].airport)
             # for i in get_stopover_by_airroute_id(13):
             #     print(i.airport)
-            l = ['a','b','c']
-            print(getTicketInfo(l))
+            # print(createUser())
