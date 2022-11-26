@@ -1,5 +1,4 @@
 
-from selenium.webdriver.common.by import By
 from flask import render_template, request, redirect, url_for
 import datetime
 from  datetime import timedelta
@@ -54,11 +53,21 @@ def details(flight_id):
             err_msg = 'Đã quá thời gian mua vé'
     return render_template('details.html', flight=f, time=t, stopover=st, err_msg=err_msg)
 
+
+
 @app.route("/ticket/<int:Adult_Fseat>, <int:Adult_Sseat>, <int:Child_Fseat>, <int:Child_Sseat>")
 def ticket(Adult_Fseat, Adult_Sseat, Child_Fseat, Child_Sseat):
+<<<<<<< HEAD
     TicketList =[]
     list = request.args.get('a1')
 
+=======
+    list = request.args.getlist('a1')
+    err_msg = 'he'
+    if list:
+        for i in list:
+            err_msg += i
+>>>>>>> e0edec54eb5655bd86937f698fd3261985ddd291
     return render_template('/ticket.html', Adult_Fseat=Adult_Fseat, Adult_Sseat=Adult_Sseat,
                            Child_Fseat= Child_Fseat, Child_Sseat=Child_Sseat)
 
@@ -66,6 +75,7 @@ def ticket(Adult_Fseat, Adult_Sseat, Child_Fseat, Child_Sseat):
 @login.user_loader
 def load_user(user_id):
     return LoadData.get_user_by_id(user_id)
+
 
 if __name__ == '__main__':
     with app.app_context():

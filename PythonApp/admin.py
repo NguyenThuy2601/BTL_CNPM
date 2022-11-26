@@ -13,7 +13,7 @@ from flask import render_template, redirect
 
 def getAirPort():
     with app.app_context():
-        return [(p.location, p.location) for p in AirPort.query.all()]
+        return [(p.id, p.location) for p in AirPort.query.all()]
 
 
 def getRule(i):
@@ -74,27 +74,29 @@ class AirRouteView(AuthModelView):
         else:
             flash(gettext('Quá số lượng sân bay quá cảnh theo quy định'), 'error')
 
-        def create_model(self, form):
-            if len(form.stop_over.data) <= getRule(form.rule.data.id):
-                new_ar = AirRoute(name=form.name.data, departure_id=form.departure.data.id,
-                                  destination_id = form.destination.data.id,
-                                  rule_id = form.rule.data.id)
-                db.session.add(new_ar)
+    def create_model(self, form):
+        if len(form.stop_over.data) <= getRule(form.rule.data.id):
+            new_ar = AirRoute(name=form.name.data, departure_id=form.departure.data.id,
+                              destination_id = form.destination.data.id,
+                                rule_id = form.rule.data.id)
+            db.session.add(new_ar)
+            db.session.commit()
+            for i in form.stop_over.data:
+                stopover = StopOver.query.get(i)
+                stopover.airroute_id = new_ar.id
+                db.session.add(stopover)
                 db.session.commit()
-                for i in form.stop_over.data:
-                    stopover = StopOver.query.get(i)
-                    stopover.airroute_id = new_ar.id
-                    db.session.add(stopover)
-                    db.session.commit()
-                return True
-            else:
-                flash(gettext('Quá số lượng sân bay quá cảnh theo quy định'), 'error')
+            return True
+        else:
+            flash(gettext('Quá số lượng sân bay quá cảnh theo quy định'), 'error')
+
 
 class LogoutView(AuthView):
     @expose('/')
     def index(self):
         logout_user()
         return redirect('/admin')
+
 
 admin = Admin(app=app, name='Quản trị sân bay', template_mode='bootstrap4')
 admin.add_view(AuthModelView(AirPort, db.session, name='Sân bay'))
