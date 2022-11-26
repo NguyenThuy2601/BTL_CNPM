@@ -45,6 +45,7 @@ class User(db.Model):
     Lname = Column(String(50))
     Gender = Column(Enum(Gender))
     DOB = Column(DATE)
+    PhoneNum = Column(String(10))
 
     owner = relationship('IDPaper', backref='user', lazy=True)
 
@@ -241,8 +242,8 @@ if __name__ == '__main__':
 
         # tao nv
 
-        u1 = User(Fname='Thụy', Lname='Cao Nguyên', Gender=Gender.FEMALE, DOB=datetime(2002, 1, 26))
-        u2 = User(Fname='Tài', Lname='Ngô Thị Kim', Gender=Gender.FEMALE, DOB=datetime(2002, 3, 18))
+        u1 = User(Fname='Thụy', Lname='Cao Nguyên', Gender=Gender.FEMALE, DOB=datetime(2002, 1, 26), PhoneNum='0303030303')
+        u2 = User(Fname='Tài', Lname='Ngô Thị Kim', Gender=Gender.FEMALE, DOB=datetime(2002, 3, 18), PhoneNum='0707077007')
         db.session.add_all([u1, u2])
         db.session.commit()
         e1 = Employee(id=u1.id, position='Quản trị')
@@ -263,9 +264,9 @@ if __name__ == '__main__':
 
         # Tao khach hang
 
-        u3 = User(Fname='Huy', Lname='Đoàn Gia', Gender=Gender.MAlE, DOB=datetime(2002, 1, 3))
-        u4 = User(Fname='Nhi', Lname='Nguyễn Đặng Tuyết', Gender=Gender.FEMALE, DOB=datetime(1999, 11, 23))
-        u5 = User(Fname='Tiến', Lname='Phạm Gia', Gender=Gender.MAlE, DOB=datetime(1999, 12, 7))
+        u3 = User(Fname='Huy', Lname='Đoàn Gia', Gender=Gender.MAlE, DOB=datetime(2002, 1, 3), PhoneNum='0909090909')
+        u4 = User(Fname='Nhi', Lname='Nguyễn Đặng Tuyết', Gender=Gender.FEMALE, DOB=datetime(1999, 11, 23), PhoneNum='0101010101')
+        u5 = User(Fname='Tiến', Lname='Phạm Gia', Gender=Gender.MAlE, DOB=datetime(1999, 12, 7), PhoneNum='0202020202')
         db.session.add_all([u3, u4, u5])
         db.session.commit()
         c1 = Customer(id=u3.id)

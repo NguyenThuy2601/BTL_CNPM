@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7ff94f17-cb89-4b11-a760-8f98cce99a79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/PythonApp/templates/details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonApp/templates/ticket.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonApp/LoadData.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/LoadData.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PythonApp/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PythonApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonApp/templates/Search.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/templates/Search.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PythonApp/templates/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/templates/layout/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PythonApp/templates/ticket.html" beforeDir="false" afterPath="$PROJECT_DIR$/PythonApp/templates/ticket.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,8 +112,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.LoadData" />
         <item itemvalue="Python.models" />
+        <item itemvalue="Python.LoadData" />
       </list>
     </recent_temporary>
   </component>
@@ -148,7 +144,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/PythonApp/models.py</url>
-          <line>236</line>
+          <line>237</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

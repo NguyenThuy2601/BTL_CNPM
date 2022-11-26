@@ -8,8 +8,9 @@
 {% endif %}
 <div class="container">
     <form>
-    {% for i in range(0,Adult_Fseat + 1) %}
+    {% for i in range(0,Adult_Fseat) %}
     <div class="input-group mb-3 input-group-sm">
+        <span class="input-group-text">{{flight.id}}</span>
         <span class="input-group-text">Small</span>
         <input type="text" class="form-control" name="a1">
     </div>

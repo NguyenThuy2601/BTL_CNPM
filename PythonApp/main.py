@@ -56,11 +56,11 @@ def details(flight_id):
 
 @app.route("/ticket/<int:Adult_Fseat>, <int:Adult_Sseat>, <int:Child_Fseat>, <int:Child_Sseat>")
 def ticket(Adult_Fseat, Adult_Sseat, Child_Fseat, Child_Sseat):
+    TicketList =[]
     list = request.args.get('a1')
-    err_msg = 'he'
-    err_msg=LoadData.getTicketInfo(list)
+
     return render_template('/ticket.html', Adult_Fseat=Adult_Fseat, Adult_Sseat=Adult_Sseat,
-                           Child_Fseat= Child_Fseat, Child_Sseat=Child_Sseat, err_msg=err_msg)
+                           Child_Fseat= Child_Fseat, Child_Sseat=Child_Sseat)
 
 
 @login.user_loader
