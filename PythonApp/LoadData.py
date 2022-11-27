@@ -1,6 +1,7 @@
 import datetime
 from PythonApp import app, db
-from PythonApp.models import Account, Flight, AirRoute, AirPort, Schedule
+from PythonApp.models import Account, Flight, AirRoute, AirPort, Schedule, StopOver, User
+from datetime import datetime
 import hashlib
 
 
@@ -31,14 +32,43 @@ def get_flight(departure=None, destination=None, time=0):
         id = get_airroute_id_by_name(departure, destination)
         query = query.filter(Flight.air_route_id.__eq__(id))
     if time:
-        query = query.join(Schedule, Flight.id == Schedule.id).filter(Schedule.flight_time >= time)
+        query = query.join(Schedule, Flight.id == Schedule.id).filter(Schedule.time >= time)
     return query.all()
+
+def get_flight_by_id(id):
+    return Flight.query.get(id)
+
+def get_flight_time_by_id(id):
+    q = Schedule.query.get(id)
+    return q
+
+def get_stopover_by_airroute_id(id):
+    q = StopOver.query.filter(StopOver.airroute_id == id).all()
+    return q
+
 
 def getLocation():
     return AirPort.query.all()
 
+
+def getTicketInfo(l):
+    a = ""
+    for i in l:
+        a += i
+        print(a)
+
+
+def createUser():
+    pass
+
 if __name__ == "__main__":
     with app.app_context():
 
-            print(get_airroute_id_by_name('Đà Nẵng', 'Đà Nẵng'))
-            print(get_flight('Đà Nẵng', 'Đà Nẵng'))
+            # print(get_airroute_id_by_name('Đà Nẵng', 'Đà Nẵng'))
+            # print(get_flight('Đà Nẵng', 'Đà Nẵng'))
+            f = get_flight_by_id(1)
+            # f = f.airroute.rule.selling_ticket_hour
+            print(f.airroute.stop_over[0].airport)
+            # for i in get_stopover_by_airroute_id(13):
+            #     print(i.airport)
+            # print(createUser())

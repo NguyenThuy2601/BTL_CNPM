@@ -1,0 +1,136 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<script>
+     $(document).ready(function(){
+         rule1 = parseInt($('#Adult1').attr("max"))
+         rule2 = parseInt($('#Adult2').attr("max"))
+         $('#Adult1').change(function() {
+            oldval = parseInt($('#Adult1').attr("value"))
+            newval = parseInt($('#Adult1').val())
+            val = parseInt($('#Child1').attr("max"))
+            if(oldval < newval)
+            {
+                new_max = rule1 - newval
+                $('#Child1').attr({
+                    "max": new_max
+                });
+            }
+            else
+            {
+                new_max = val + (oldval - newval)
+                $('#Child1').attr({
+                    "max": new_max
+                });
+            }
+            $('#Adult1').attr("value", newval)
+         });
+         $('#Child1').change(function() {
+            oldval = parseInt($('#Child1').attr("value"))
+            newval = parseInt($('#Child1').val())
+            val = parseInt($('#Adult1').attr("max"))
+            if(oldval < newval)
+            {
+                new_max = rule1 - newval
+                $('#Adult1').attr({
+                    "max": new_max
+                });
+            }
+            else
+            {
+                new_max = val + (oldval - newval)
+                $('#Adult1').attr({
+                    "max": new_max
+                });
+            }
+            $('#Child1').attr("value", newval)
+         });
+          $('#Adult2').change(function() {
+            oldval = parseInt($('#Adult2').attr("value"))
+            newval = parseInt($('#Adult2').val())
+            val = parseInt($('#Child2').attr("max"))
+            if(oldval < newval)
+            {
+                new_max = rule2 - newval
+                $('#Child2').attr({
+                    "max": new_max
+                });
+            }
+            else
+            {
+                new_max = val + (oldval - newval)
+                $('#Child2').attr({
+                    "max": new_max
+                });
+            }
+            $('#Adult2').attr("value", newval)
+         });
+         $('#Child2').change(function() {
+            oldval = parseInt($('#Child2').attr("value"))
+            newval = parseInt($('#Child2').val())
+            val = parseInt($('#Adult2').attr("max"))
+            if(oldval < newval)
+            {
+                new_max = rule2 - newval
+                $('#Adult2').attr({
+                    "max": new_max
+                });
+            }
+            else
+            {
+                new_max = val + (oldval - newval)
+                $('#Adult2').attr({
+                    "max": new_max
+                });
+            }
+            $('#Child2').attr("value", newval)
+         });
+     })
+
+</script>
+{% if err_msg %}
+<div class="alert alert-danger">
+    {{err_msg}}
+</div>
+{% endif %}
+<h1 class="text-center text-success">Chi tiết chuyến bay</h1>
+
+<div class="row" style="margin-top:10%">
+    <div class="col-md-4 col-sm-6">
+        <img src="https://thumbs.dreamstime.com/b/jet-plane-icon-jet-plane-icon-blue-white-background-120405606.jpg"
+             class="img-fluid" alt="{{ flight.id}} "/>
+    </div>
+    <div class="col-md-8 col-sm-6">
+        <h1>{{ flight.airroute }}</h1>
+        <p>Máy bay: {{ flight.airplane.type }} {{flight.airplane}}</p>
+        <p>Thời gian bay: {{ flight.schedule[0].time }}</p>
+        {% for s in stopover %}
+        <p>Sân bay trung chuyển: {{ s.airport }}</p>
+        {% endfor %}
+        <h3>Giá vé hạng 2: {{ "{:,.1f}".format(flight.ticketprice.Sprice) }} VND</h3>
+        <h3>Giá vé hạng 1: {{ "{:,.1f}".format(flight.ticketprice.Fprice) }} VND</h3>
+        <form>
+            <h4>Hạng 1:</h4>
+            <div style="text-indent: 2%">
+                <label for="Adult1" style="margin-right: 2.4%"> Người lớn: </label>
+                <input type="number" id="Adult1" name="Fseat_adult" step="1" max="{{flight.schedule[0].num_o_Fseat}}" min="0" value="0">
+            </div>
+            <div style="text-indent: 2%">
+                <label for="Child1" style="margin-top: 1%; margin-right: 5%"> Trẻ em: </label>
+                <input type="number" id="Child1" name="Fseat_child" step="1" max="{{flight.schedule[0].num_o_Fseat}}" min="0" value="0">
+            </div>
+            <h4>Hạng 2:</h4>
+            <div style="text-indent: 2%">
+                <label for="Adult2" style="margin-right: 2.4%"> Người lớn: </label>
+                <input type="number" id="Adult2" name="Sseat_adult" step="1" max="{{flight.schedule[0].num_o_Sseat}}" min="0" value="0">
+            </div>
+            <div style="text-indent: 2%">
+                <label for="Child2" style="margin-top: 1%; margin-right: 5%"> Trẻ em: </label>
+                <input type="number" id="Child2" name="Sseat_child" step="1" max="{{flight.schedule[0].num_o_Sseat}}" min="0" value="0">
+            </div>
+            <button class="btn btn-primary" type="submit" style="margin-top: 3%">Đặt mua</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
