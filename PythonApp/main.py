@@ -29,6 +29,11 @@ def index():
 def load_user(user_id):
     return LoadData.get_user_by_id(user_id)
 
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
 if __name__ == '__main__':
     with app.app_context():
         app.run(debug=True)
