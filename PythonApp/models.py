@@ -17,10 +17,6 @@ class UserRole(E):
     ADMIN = 3
 
 
-class SeatClass(E):
-    FIRST = 1
-    SECOND = 2
-
 
 class Papers(E):
     PASSPORT = 1
@@ -82,12 +78,12 @@ class Account(BaseModel, UserMixin):
 
 class Ticket(BaseModel):
     __tablename__ = 'ticket'
-    seat_class = Column(Enum(SeatClass), default=SeatClass.SECOND)
+    seat_class = Column(Integer, default=2)
     owner_id = Column(Integer, ForeignKey(Customer.id, ondelete='CASCADE'), nullable=False)
     buyer_id = Column(Integer, ForeignKey(Customer.id, ondelete='CASCADE'), nullable=False)
     saleman_id = Column(Integer, ForeignKey(Employee.id), nullable=True)
     flight_id = Column(Integer, ForeignKey('flight.id', ondelete='CASCADE'), nullable=False)
-    ticket_id = Column(Integer, ForeignKey('seat.id'), nullable=False)
+    seat_id = Column(Integer, ForeignKey('seat.id'), nullable=False)
 
     buyer = relationship('Customer', foreign_keys=[buyer_id], cascade="all,delete")
     owner = relationship('Customer', foreign_keys=[owner_id])
@@ -211,7 +207,7 @@ class Airplane(BaseModel):
 class Seat(BaseModel):
     __tablename__ = 'seat'
     seatName = Column(String(50), nullable=False)
-    Sclass = Column(Enum(SeatClass), default=SeatClass.SECOND)
+    Sclass = Column(Integer, default=2)
 
     airplane_id = Column(Integer, ForeignKey(Airplane.id), nullable=False)
 
@@ -430,27 +426,27 @@ if __name__ == '__main__':
         # Tao cho 6 chuyen dau ghe hang 1
         for i in range(1, 7):
             for j in range(1, 21):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.FIRST, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=1, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen dau ghe hang 2
         for i in range(1, 7):
             for j in range(21, 51):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.SECOND, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen sau ghe hang 1
         for i in range(7, 13):
             for j in range(1, 21):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.FIRST, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=1, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen sau ghe hang 2
         for i in range(7, 13):
             for j in range(21, 56):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.SECOND, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()

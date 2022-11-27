@@ -36,17 +36,15 @@ def details(flight_id):
     flight_time = f.schedule[0].time
     err_msg = ''
     try:
-        Adult1 = int(request.args.get('Fseat_adult'))
-        Child1 = int(request.args.get('Fseat_child'))
-        Adult2 = int(request.args.get('Sseat_adult'))
-        Child2 = int(request.args.get('Sseat_child'))
+        Adult = int(request.args.get('adult'))
+        Child = int(request.args.get('child'))
     except:
-        Adult1 = Child1 = Adult2 = Child2 = 0
-    if Adult1 or Child1 or Adult2 or Child2:
+        Adult = Child = 0
+    if Adult or Child:
         if flight_time - datetime.datetime.now() > timedelta(hours=f.airroute.rule.selling_ticket_hour):
-            if (remaining_Fseat >= Adult1 + Child1) and (remaining_Sseat >= Adult2 + Child2):
+            if (remaining_Fseat >= Adult + Child) and (remaining_Sseat >= Adult + Child):
                 return redirect(
-                    url_for('ticket', Adult_Fseat=Adult1, Adult_Sseat=Adult2, Child_Fseat=Child1, Child_Sseat=Child2,
+                    url_for('ticket', Adult=Adult, Child = Child,
                             f_id=flight_id))
             else:
                 err_msg = 'Số lượng vé mua vượt quá số lượng vé còn'
@@ -55,7 +53,7 @@ def details(flight_id):
     return render_template('details.html', flight=f, stopover=st, err_msg=err_msg)
 
 
-@app.route("/ticket/<int:Adult_Fseat>, <int:Adult_Sseat>, <int:Child_Fseat>, <int:Child_Sseat>, <int:f_id>")
+@app.route("/ticket/<int:Adult>, <int:Child>, <int:f_id>")
 def ticket(Adult_Fseat, Adult_Sseat, Child_Fseat, Child_Sseat, f_id):
     TicketList = []
     f = LoadData.get_flight_by_id(f_id)

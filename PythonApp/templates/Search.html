@@ -46,6 +46,7 @@
             <div class="card-body">{{f.id}}</div>
             <div class="card-body">{{f.airroute}}</div>
             <div class="card-body">{{ "{:,.1f}".format(f.ticketprice.Sprice)  }} VND+</div>
+            <div class="card-body"> {{f.schedule[0].time}}</div>
             <div class="card-body">
                 <a href="/flight/{{f.id}}" class="btn btn-primary">Đặt vé</a>
             </div>
