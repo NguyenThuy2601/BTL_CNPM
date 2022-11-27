@@ -66,6 +66,13 @@ def load_user(user_id):
     return LoadData.get_user_by_id(user_id)
 
 
+# <<<<<<< HEAD
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+# =======
+# >>>>>>> ba4d3624c944c978b2d92b44b74553e5c8c9ca49
 if __name__ == '__main__':
     with app.app_context():
         app.run(debug=True)
