@@ -2,6 +2,7 @@ import datetime
 import hashlib
 
 from sqlalchemy import Column, Integer, String, Text, Boolean, Float, ForeignKey, Enum, DATETIME, DATE
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -16,10 +17,6 @@ class UserRole(E):
     ADMIN = 3
 
 
-class SeatClass(E):
-    FIRST = 1
-    SECOND = 2
-
 
 class Papers(E):
     PASSPORT = 1
@@ -27,9 +24,7 @@ class Papers(E):
     BIRTHCERT = 3
 
 
-class Gender(E):
-    FEMALE = 1
-    MAlE = 2
+
 
 
 class BaseModel(db.Model):
@@ -42,8 +37,8 @@ class User(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     Fname = Column(String(50))
     Lname = Column(String(50))
-    Gender = Column(Enum(Gender))
     DOB = Column(DATE)
+    PhoneNum = Column(String(10))
 
     owner = relationship('IDPaper', backref='user', lazy=True)
 
@@ -83,12 +78,12 @@ class Account(BaseModel, UserMixin):
 
 class Ticket(BaseModel):
     __tablename__ = 'ticket'
-    seat_class = Column(Enum(SeatClass), default=SeatClass.SECOND)
+    seat_class = Column(Integer, default=2)
     owner_id = Column(Integer, ForeignKey(Customer.id, ondelete='CASCADE'), nullable=False)
     buyer_id = Column(Integer, ForeignKey(Customer.id, ondelete='CASCADE'), nullable=False)
     saleman_id = Column(Integer, ForeignKey(Employee.id), nullable=True)
     flight_id = Column(Integer, ForeignKey('flight.id', ondelete='CASCADE'), nullable=False)
-    ticket_id = Column(Integer, ForeignKey('seat.id'), nullable=False)
+    seat_id = Column(Integer, ForeignKey('seat.id'), nullable=False)
 
     buyer = relationship('Customer', foreign_keys=[buyer_id], cascade="all,delete")
     owner = relationship('Customer', foreign_keys=[owner_id])
@@ -153,7 +148,7 @@ class Flight(BaseModel):
     airplane_id = Column(Integer, ForeignKey('airplane.id'), nullable=False)
     price_id = Column(Integer, ForeignKey('ticketprice.id'), nullable=False)
 
-    schedule = relationship('Schedule', backref='flight', lazy=True)
+    schedule = relationship('Schedule', backref='flight', lazy='subquery')
     ticket = relationship('Ticket', backref='flight', lazy=True)
 
     def __str__(self):
@@ -174,12 +169,12 @@ class StopOver(BaseModel):
 class Schedule(BaseModel):
     __tablename__ = 'schedule'
     id = Column(Integer, ForeignKey(Flight.id), primary_key=True)
-    flight_time = Column(DATETIME, nullable=False)
+    time = Column(DATETIME, nullable=False)
     num_o_Fseat = Column(Integer, nullable=False)
     num_o_Sseat = Column(Integer, nullable=False)
 
     def __str__(self):
-        return str(self.flight_time)
+        return self.time
 
 
 class Type(BaseModel):
@@ -212,8 +207,7 @@ class Airplane(BaseModel):
 class Seat(BaseModel):
     __tablename__ = 'seat'
     seatName = Column(String(50), nullable=False)
-    is_taken = Column(Boolean, default=False)
-    Sclass = Column(Enum(SeatClass), default=SeatClass.SECOND)
+    Sclass = Column(Integer, default=2)
 
     airplane_id = Column(Integer, ForeignKey(Airplane.id), nullable=False)
 
@@ -241,8 +235,8 @@ if __name__ == '__main__':
 
         # tao nv
 
-        u1 = User(Fname='Thụy', Lname='Cao Nguyên', Gender=Gender.FEMALE, DOB=datetime(2002, 1, 26))
-        u2 = User(Fname='Tài', Lname='Ngô Thị Kim', Gender=Gender.FEMALE, DOB=datetime(2002, 3, 18))
+        u1 = User(Fname='Thụy', Lname='Cao Nguyên', DOB=datetime(2002, 1, 26), PhoneNum='0303030303')
+        u2 = User(Fname='Tài', Lname='Ngô Thị Kim', DOB=datetime(2002, 3, 18), PhoneNum='0707077007')
         db.session.add_all([u1, u2])
         db.session.commit()
         e1 = Employee(id=u1.id, position='Quản trị')
@@ -263,9 +257,9 @@ if __name__ == '__main__':
 
         # Tao khach hang
 
-        u3 = User(Fname='Huy', Lname='Đoàn Gia', Gender=Gender.MAlE, DOB=datetime(2002, 1, 3))
-        u4 = User(Fname='Nhi', Lname='Nguyễn Đặng Tuyết', Gender=Gender.FEMALE, DOB=datetime(1999, 11, 23))
-        u5 = User(Fname='Tiến', Lname='Phạm Gia', Gender=Gender.MAlE, DOB=datetime(1999, 12, 7))
+        u3 = User(Fname='Huy', Lname='Đoàn Gia', DOB=datetime(2002, 1, 3), PhoneNum='0909090909')
+        u4 = User(Fname='Nhi', Lname='Nguyễn Đặng Tuyết', DOB=datetime(1999, 11, 23), PhoneNum='0101010101')
+        u5 = User(Fname='Tiến', Lname='Phạm Gia', DOB=datetime(1999, 12, 7), PhoneNum='0202020202')
         db.session.add_all([u3, u4, u5])
         db.session.commit()
         c1 = Customer(id=u3.id)
@@ -398,29 +392,29 @@ if __name__ == '__main__':
 
         # Tao lich bay
 
-        sc1 = Schedule(id=f1.id, flight_time=datetime(2023, 10, 11, 9, 10, 0, 0),
+        sc1 = Schedule(id = f1.id, time=datetime(2023, 10, 11, 9, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc2 = Schedule(id=f2.id, flight_time=datetime(2023, 1, 11, 22, 10, 0, 0),
+        sc2 = Schedule(id = f2.id,time=datetime(2023, 1, 11, 22, 10, 0, 0),
                        num_o_Fseat=5, num_o_Sseat=12)
-        sc3 = Schedule(id=f3.id, flight_time=datetime(2022, 12, 30, 8, 10, 0, 0),
+        sc3 = Schedule(id = f3.id,time=datetime(2022, 12, 30, 8, 10, 0, 0),
                        num_o_Fseat=20, num_o_Sseat=10)
-        sc4 = Schedule(id=f4.id, flight_time=datetime(2023, 3, 11, 12, 0, 0, 0),
+        sc4 = Schedule(id = f4.id, time=datetime(2023, 3, 11, 12, 0, 0, 0),
                        num_o_Fseat=0, num_o_Sseat=30)
-        sc5 = Schedule(id=f5.id, flight_time=datetime(2023, 10, 11, 8, 10, 0, 0),
+        sc5 = Schedule(id = f5.id,time=datetime(2023, 10, 11, 8, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc6 = Schedule(id=f6.id, flight_time=datetime(2023, 3, 11, 10, 10, 0, 0),
+        sc6 = Schedule(id = f6.id,time=datetime(2023, 3, 11, 10, 10, 0, 0),
                        num_o_Fseat=2, num_o_Sseat=20)
-        sc7 = Schedule(id=f7.id, flight_time=datetime(2023, 4, 14, 4, 10, 0, 0),
+        sc7 = Schedule(id = f7.id,time=datetime(2023, 4, 14, 4, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc8 = Schedule(id=f8.id, flight_time=datetime(2023, 1, 1, 0, 10, 0, 0),
+        sc8 = Schedule(id = f8.id,time=datetime(2023, 1, 1, 0, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc9 = Schedule(id=f9.id, flight_time=datetime(2023, 9, 9, 5, 10, 0, 0),
+        sc9 = Schedule(id = f9.id,time=datetime(2023, 9, 9, 5, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=20)
-        sc10 = Schedule(id=f10.id, flight_time=datetime(2023, 6, 7, 21, 10, 0, 0),
+        sc10 = Schedule(id = f10.id,time=datetime(2023, 6, 7, 21, 10, 0, 0),
                         num_o_Fseat=10, num_o_Sseat=10)
-        sc11 = Schedule(id=f11.id, flight_time=datetime(2023, 5, 11, 18, 1, 0, 0),
+        sc11 = Schedule(id = f11.id,time=datetime(2023, 5, 11, 18, 1, 0, 0),
                         num_o_Fseat=10, num_o_Sseat=10)
-        sc12 = Schedule(id=f12.id, flight_time=datetime(2023, 3, 3, 23, 10, 0, 0),
+        sc12 = Schedule(id = f12.id, time=datetime(2023, 3, 3, 23, 10, 0, 0),
                         num_o_Fseat=10, num_o_Sseat=9)
 
         db.session.add_all([sc1, sc2, sc3, sc4, sc5, sc6,
@@ -432,27 +426,27 @@ if __name__ == '__main__':
         # Tao cho 6 chuyen dau ghe hang 1
         for i in range(1, 7):
             for j in range(1, 21):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.FIRST, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=1, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen dau ghe hang 2
         for i in range(1, 7):
             for j in range(21, 51):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.SECOND, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen sau ghe hang 1
         for i in range(7, 13):
             for j in range(1, 21):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.FIRST, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=1, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen sau ghe hang 2
         for i in range(7, 13):
             for j in range(21, 56):
-                seat = Seat(seatName=String(j), Sclass=SeatClass.SECOND, airplane_id=i)
+                seat = Seat(seatName=String(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
