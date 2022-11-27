@@ -7,7 +7,7 @@ from flask_babelex import Babel
 
 app = Flask(__name__)
 app.secret_key = 'abcs123jjdusu'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/cnpm_btl?charset=utf8mb4' % quote('1234567')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/cnpm_btl?charset=utf8mb4' % quote('1234')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app = app)
