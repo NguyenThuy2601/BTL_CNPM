@@ -42,29 +42,19 @@
     <div class="container">
         {% if flight %}
         {% for f in flight %}
-<<<<<<< HEAD
-        <div class="card bg-success text-white" style="margin-top: 3%">
-            <div class="card-body">{{f.id}}</div>
-            <div class="card-body">{{f.airroute}}</div>
-            <div class="card-body">{{ "{:,.1f}".format(f.ticketprice.Sprice)  }} VND+</div>
-            <div class="card-body"> {{f.schedule[0].time}}</div>
-            <div class="card-body">
-                <a href="/flight/{{f.id}}" class="btn btn-primary">Đặt vé</a>
-=======
         <div class="card" style="margin-top: 3%">
-<!--            <div class="card-body">{{f.id}}</div>-->
             <div class="d-flex align-items-center borderrr rounded-3" style="height:120px; font-size:22px">
                 <div class="ms-5">
                     <i class="fa fa-plane" aria-hidden="true"></i>
                 </div>
                 <div class="card-body text-center">{{f.airroute}}
                     <br> {{f.schedule[0].time}}</div>
-<!--                <div class="card-body text-center"> {{f.schedule[0].time}}</div>-->
+                <div class="card-body text-center"> {{f.schedule[0].time}}</div>
                 <div class="card-body text-center">{{ "{:,.1f}".format(f.ticketprice.Sprice) }} VND+</div>
                 <div class="card-body text-center">
                     <a href="/flight/{{f.id}}" class="btn btn-primary" style="width:100px">Đặt vé</a>
                 </div>
->>>>>>> 99092452a08781af17741b6e28cd208c19248271
+
             </div>
         </div>
         {% endfor %}
