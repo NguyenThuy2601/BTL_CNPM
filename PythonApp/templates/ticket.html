@@ -7,7 +7,7 @@
 </div>
 {% endif %}
 <div class="container" style="margin-top:2%">
-    <form method="post">
+    <form method="post" accept-charset="utf-8">
         <h2 style="margin: 3%">Hạng {{sclass}} người lớn: {{Adult}} vé</h2>
         {% for i in range(0,Adult) %}
         <div style="background-color:  #86B817; border-radius: 15px 15px 0 0; ">
@@ -39,28 +39,30 @@
             <h3> Thông tin khách hàng</h3>
             <div class="input-group mb-3">
                 <span class="input-group-text">Tên</span>
-                <input type="text" class="form-control" name="AFname">
-            </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text">Ngày sinh</span>
-                <input  class="form-control" type="date" name="ADOB">
+                <input type="text" class="form-control" name="AFname" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Họ lót</span>
-                <input type="text" class="form-control" name="ALname">
+                <input type="text" class="form-control" name="ALname" required>
             </div>
             <div class="input-group mb-3">
+                <span class="input-group-text">Ngày sinh</span>
+                <input class="form-control" type="date" name="ADOB" required>
+            </div>
+
+            <div class="input-group mb-3">
                 <span class="input-group-text">Điện thoại</span>
-                <input type="text" class="form-control" maxlength="10" name="APhone">
+                <input type="text" class="form-control" minlength="10" maxlength="10" name="APhone" required>
             </div>
             <h3>Giấy tờ</h3>
             <div class="input-group mb-3">
-                <span class="input-group-text">CMND/CCCD</span>
-                <input type="text" class="form-control" name="APaper">
-            </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text">Passport</span>
-                <input type="text" class="form-control" name="APP">
+                <span class="input-group-text">
+                    <select class="form-control" name="paperType" style="background-color: #e9ecef; border:#e9ecef">
+                      <option value="2" selected>CMND</option>
+                      <option value="1">Passport</option>
+                    </select>
+                </span>
+                <input type="text" class="form-control" name="APaper" required>
             </div>
         </div>
         {% endfor %}
@@ -94,21 +96,21 @@
             <h3> Thông tin khách hàng</h3>
             <div class="input-group mb-3">
                 <span class="input-group-text">Tên </span>
-                <input type="text" class="form-control" name="CFname">
+                <input type="text" class="form-control" name="CFname" required>
 
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Họ lót </span>
-                <input type="text" class="form-control" name="CLname">
+                <input type="text" class="form-control" name="CLname" required>
 
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Ngày sinh</span>
-                <input class="form-control" type="date" name="CDOB">
+                <input class="form-control" type="date" name="CDOB" required>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Điện thoại người thân</span>
-                <input type="text" class="form-control" maxlength="10" name="CPhone">
+                <input type="text" class="form-control" maxlength="10" minlength="10" name="CPhone" required>
             </div>
             <h3>Giấy tờ</h3>
             <div class="input-group mb-3">
@@ -117,6 +119,7 @@
             </div>
         </div>
         {% endfor %}
+        <h2>Thành tiền: {{ "{:,.1f}".format(cost) }} VNĐ</h2>
         <button class="btn btn-primary" type="submit" style="margin-top: 3%">Đặt vé</button>
     </form>
 </div>

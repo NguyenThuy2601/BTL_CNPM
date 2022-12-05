@@ -51,9 +51,11 @@
                     <br> {{f.schedule[0].time}}</div>
                 <div class="card-body text-center"> {{f.schedule[0].time}}</div>
                 <div class="card-body text-center">{{ "{:,.1f}".format(f.ticketprice.Sprice) }} VND+</div>
+                {% if current_user.is_authenticated %}
                 <div class="card-body text-center">
                     <a href="/flight/{{f.id}}" class="btn btn-primary" style="width:100px">Đặt vé</a>
                 </div>
+                {% endif %}
 
             </div>
         </div>

@@ -2,7 +2,8 @@ from flask import render_template, request, redirect, url_for
 import datetime
 from datetime import timedelta
 from PythonApp import app, admin, LoadData, login, models
-from flask_login import login_user, logout_user
+from PythonApp.decorators import annonynous_user
+from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
 
 
@@ -53,93 +54,120 @@ def details(flight_id):
     return render_template('details.html', flight=f, stopover=st, err_msg=err_msg)
 
 
-@app.route("/ticket/<int:Adult>, <int:Child>, <int:f_id>, <int:sclass>", methods=['get','post'])
+@app.route("/ticket/<int:Adult>, <int:Child>, <int:f_id>, <int:sclass>", methods=['get', 'post'])
 def ticket(Adult, Child, f_id, sclass):
     TicketList = []
     f = LoadData.get_flight_by_id(f_id)
     err_msg = ""
+    if sclass == 1:
+        price = f.ticketprice.Fprice
+    else:
+        price = f.ticketprice.Sprice
+    total_cost = (Adult + Child) * price
     if request.method == 'POST':
+        TicketList.clear()
         adult_Fname = request.form.getlist('AFname')
         adult_Lname = request.form.getlist('ALname')
         adult_phone = request.form.getlist('APhone')
-        adult_cccd = request.form.getlist('APaper')
-        adult_pp = request.form.getlist('APP')
+        adult_pp = request.form.getlist('APaper')
+        pp_type = request.form.getlist('paperType')
         adult_DOB = request.form.getlist('ADOB')
 
-        child_Fname =request.form.getlist('CFname')
+        child_Fname = request.form.getlist('CFname')
         child_Lname = request.form.getlist('CLname')
         child_DOB = request.form.getlist('CDOB')
         child_pp = request.form.getlist('CPP')
         child_phone = request.form.getlist('CPhone')
 
         for i in range(0, Adult):
-            user = None
-            if adult_cccd[0]:  # kiem tra co dien cccd khong
-                user = LoadData.get_user_by_paper(adult_cccd[0])
-            else:  # Neu khong dien cccd kiem tra co dien pp hay khong
-                user = LoadData.get_user_by_paper(adult_pp[i])
-            if user > -1:
-                ticket = LoadData.create_ticket(owner_id=user, sclass= sclass, flight=f_id, buyer_id=user, seller_id=2)
-                if not LoadData.get_user_by_paper(adult_cccd[i]):
-                    LoadData.create_id_paper(adult_cccd[i], models.Papers.CCCD, user)
-                if not LoadData.get_user_by_paper(adult_pp[i]):
-                    LoadData.create_id_paper(adult_cccd[i], models.Papers.PASSPORT, user)
+            user1 = LoadData.get_customer_by_paper(adult_pp[i])
+            if user1:
+                LoadData.update_phone_number(adult_phone[i], user1)
+                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=user1,
+                                                seller_id=current_user.id)
                 TicketList.append(ticket)
             else:
-                user = LoadData.get_user_by_name_and_dob(adult_Fname[i], adult_Lname[i], adult_DOB[i])
-                if user > -1:
-                    ticket = LoadData.create_ticket(owner_id=user, sclass= sclass, flight=f_id, buyer_id=user, seller_id=2)
-                    if adult_cccd[i]:
-                        LoadData.create_id_paper(adult_cccd[i], models.Papers.CCCD, user)
-                    if adult_pp[i]:
-                        LoadData.create_id_paper(adult_cccd[i], models.Papers.PASSPORT, user)
+                user1 = LoadData.get_customer_by_name_and_dob(adult_Fname[i], adult_Lname[i], adult_DOB[i])
+                if user1:
+                    LoadData.update_phone_number(adult_phone[i], user1)
+                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=user1,
+                                                    seller_id=current_user.id)
+                    LoadData.create_id_paper(adult_pp[i], models.Papers.from_str(pp_type[i]), user1)
                     TicketList.append(ticket)
                 else:
-                    new_user = LoadData.create_customer(Fname=adult_Fname[i], Lname=adult_Lname[i], phone=adult_phone[i],
-                                                    dob=adult_DOB[i])
-                    if adult_cccd[i]:
-                        LoadData.create_id_paper(adult_cccd[i], models.Papers.CCCD, new_user)
-                    if adult_pp[i]:
-                        LoadData.create_id_paper(adult_cccd[i], models.Papers.PASSPORT, new_user)
-                    ticket = LoadData.create_ticket(owner_id=new_user, sclass= sclass, flight=f_id, buyer_id=new_user, seller_id=2)
+                    new_user = LoadData.create_customer(Fname=adult_Fname[i], Lname=adult_Lname[i],
+                                                        phone=adult_phone[i],
+                                                        dob=adult_DOB[i])
+                    LoadData.create_id_paper(adult_pp[i], models.Papers.from_str(pp_type[i]), new_user)
+                    ticket = LoadData.create_ticket(owner_id=new_user, sclass=sclass, flight=f_id, buyer_id=new_user,
+                                                    seller_id=current_user.id)
                     TicketList.append(ticket)
 
         for i in range(0, Child):
-            user = None
+            user1 = None
             if child_pp[i]:
-                user = LoadData.get_user_by_paper(child_pp[i])
-            if user > -1:
-                ticket = LoadData.create_ticket(owner_id=user, sclass= sclass, flight=f_id, buyer_id=user, seller_id=2)
+                user1 = LoadData.get_customer_by_paper(child_pp[i])
+            if user1:
+                LoadData.update_phone_number(adult_phone[i], user1)
+                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=user1, seller_id=2)
                 TicketList.append(ticket)
             else:
-                user = LoadData.get_user_by_name_and_dob(child_Fname, child_Lname, child_DOB)
-                if user > -1:
-                    ticket =LoadData.create_ticket(owner_id=user, sclass= sclass, flight=f_id, buyer_id=user, seller_id=2)
+                user1 = LoadData.get_customer_by_name_and_dob(child_Fname[i], child_Lname[i], child_DOB[i])
+                if user1:
+                    LoadData.update_phone_number(child_phone[i], user1)
+                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=user1,
+                                                    seller_id=2)
                     if child_pp[i]:
-                        LoadData.create_id_paper(child_pp[i], models.Papers.PASSPORT, user)
+                        LoadData.create_id_paper(child_pp[i], models.Papers.PASSPORT, user1)
                     TicketList.append(ticket)
                 else:
                     new_user = LoadData.create_customer(Fname=child_Fname[i], Lname=child_Lname[i], dob=child_DOB[i],
-                                                    phone=child_phone[i])
+                                                        phone=child_phone[i])
                     if child_pp[i]:
-                        LoadData.create_id_paper(child_pp[i], models.Papers.PASSPORT, user.id)
-                    ticket = LoadData.create_ticket(owner_id=new_user, sclass= sclass, flight=f_id, buyer_id=new_user, seller_id=2)
+                        LoadData.create_id_paper(child_pp[i], models.Papers.PASSPORT, new_user.id)
+                    ticket = LoadData.create_ticket(owner_id=new_user, sclass=sclass, flight=f_id, buyer_id=new_user,
+                                                    seller_id=2)
                     TicketList.append(ticket)
-        return redirect(url_for('previewTicket', list = TicketList))
-    return render_template('/ticket.html', Adult=Adult, Child=Child, f=f, sclass=sclass, err_msg=err_msg)
+        return redirect(url_for('previewTicket', list=TicketList))
+
+    return render_template('/ticket.html', Adult=Adult, Child=Child, f=f, sclass=sclass, err_msg=err_msg, cost=total_cost)
+
 
 @app.route('/previewTicket/<list>')
 def previewTicket(list):
-    return render_template('/previewTicket.html', list=list)
+    Tlist = list.strip('][').split(',')
+    for i in range(0, len(Tlist)):
+        Tlist[i] = LoadData.get_ticket_by_id(Tlist[i])
+    return render_template('/previewTicket.html', list=Tlist)
+
 
 @login.user_loader
 def load_user(user_id):
     return LoadData.get_user_by_id(user_id)
 
 
-@app.route("/login")
-def login():
-    return render_template("login.html")
+@annonynous_user
+@app.route('/login', methods=['get', 'post'])
+def login_my_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = LoadData.auth_user(username=username, passw=password)
+        if user and user.user_role == models.UserRole.EMPLOYEE:
+            login_user(user=user)
+            return redirect('/')
+        else:
+            if user and user.user_role == models.UserRole.ADMIN:
+                login_user(user=user)
+                return redirect('/admin')
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout_my_user():
+    logout_user()
+    return redirect('/login')
 
 
 if __name__ == '__main__':

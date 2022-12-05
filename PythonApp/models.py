@@ -17,10 +17,17 @@ class UserRole(E):
     ADMIN = 3
 
 
-
 class Papers(E):
     PASSPORT = 1
     CCCD = 2
+
+    @staticmethod
+    def from_str(label):
+
+        if label == 1:
+            return Papers.PASSPORT
+        else:
+            return Papers.CCCD
 
 
 
@@ -40,7 +47,8 @@ class User(db.Model):
     PhoneNum = Column(String(10))
 
     owner = relationship('IDPaper', backref='user', lazy=True)
-
+    customer = relationship('Customer', backref='user', lazy=True)
+    employee = relationship('Employee', backref='user', lazy=True)
 
 class Customer(db.Model):
     __tablename__ = 'customer'
@@ -211,7 +219,7 @@ class Seat(BaseModel):
 
     airplane_id = Column(Integer, ForeignKey(Airplane.id), nullable=False)
 
-    ticket = relationship('Ticket', backref='airplane', lazy=True)
+    ticket = relationship('Ticket', backref='seat', lazy=True)
 
     def __str__(self):
         return self.seatName
@@ -341,8 +349,8 @@ if __name__ == '__main__':
 
         # Tao loai may bay
 
-        t1 = Type(model='AirBus', generation='A370', num_o_seat=50)
-        t2 = Type(model='Boeing', generation='A52', num_o_seat=55)
+        t1 = Type(model='AirBus', generation='A370', num_o_seat=100)
+        t2 = Type(model='Boeing', generation='A52', num_o_seat=150)
 
         db.session.add_all([t1, t2])
         db.session.commit()
@@ -393,29 +401,29 @@ if __name__ == '__main__':
         # Tao lich bay
 
         sc1 = Schedule(id = f1.id, time=datetime(2023, 10, 11, 9, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=20)
+                       num_o_Fseat=10, num_o_Sseat=40)
         sc2 = Schedule(id = f2.id,time=datetime(2023, 1, 11, 22, 10, 0, 0),
-                       num_o_Fseat=5, num_o_Sseat=12)
+                       num_o_Fseat=15, num_o_Sseat=80)
         sc3 = Schedule(id = f3.id,time=datetime(2022, 12, 30, 8, 10, 0, 0),
-                       num_o_Fseat=20, num_o_Sseat=10)
+                       num_o_Fseat=20, num_o_Sseat=70)
         sc4 = Schedule(id = f4.id, time=datetime(2023, 3, 11, 12, 0, 0, 0),
-                       num_o_Fseat=0, num_o_Sseat=30)
+                       num_o_Fseat=40, num_o_Sseat=30)
         sc5 = Schedule(id = f5.id,time=datetime(2023, 10, 11, 8, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=20)
+                       num_o_Fseat=10, num_o_Sseat=60)
         sc6 = Schedule(id = f6.id,time=datetime(2023, 3, 11, 10, 10, 0, 0),
-                       num_o_Fseat=2, num_o_Sseat=20)
+                       num_o_Fseat=30, num_o_Sseat=50)
         sc7 = Schedule(id = f7.id,time=datetime(2023, 4, 14, 4, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=20)
+                       num_o_Fseat=40, num_o_Sseat=45)
         sc8 = Schedule(id = f8.id,time=datetime(2023, 1, 1, 0, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=20)
+                       num_o_Fseat=20, num_o_Sseat=60)
         sc9 = Schedule(id = f9.id,time=datetime(2023, 9, 9, 5, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=20)
+                       num_o_Fseat=10, num_o_Sseat=70)
         sc10 = Schedule(id = f10.id,time=datetime(2023, 6, 7, 21, 10, 0, 0),
-                        num_o_Fseat=10, num_o_Sseat=10)
+                        num_o_Fseat=10, num_o_Sseat=40)
         sc11 = Schedule(id = f11.id,time=datetime(2023, 5, 11, 18, 1, 0, 0),
-                        num_o_Fseat=10, num_o_Sseat=10)
+                        num_o_Fseat=20, num_o_Sseat=50)
         sc12 = Schedule(id = f12.id, time=datetime(2023, 3, 3, 23, 10, 0, 0),
-                        num_o_Fseat=10, num_o_Sseat=9)
+                        num_o_Fseat=10, num_o_Sseat=90)
 
         db.session.add_all([sc1, sc2, sc3, sc4, sc5, sc6,
                             sc7, sc8, sc9, sc10, sc11, sc12])
@@ -423,30 +431,30 @@ if __name__ == '__main__':
 
         # Tao ghe
 
-        # Tao cho 6 chuyen dau ghe hang 1
+        # Tao cho 6 may bay dau ghe hang 1
         for i in range(1, 7):
-            for j in range(1, 21):
+            for j in range(1, 51):
                 seat = Seat(seatName=str(j), Sclass=1, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
-            # Tao cho 6 chuyen dau ghe hang 2
+            # Tao cho 6 may bay dau ghe hang 2
         for i in range(1, 7):
-            for j in range(21, 51):
+            for j in range(51, 101):
                 seat = Seat(seatName=str(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen sau ghe hang 1
         for i in range(7, 13):
-            for j in range(1, 21):
+            for j in range(1, 51):
                 seat = Seat(seatName=str(j), Sclass=1, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
 
             # Tao cho 6 chuyen sau ghe hang 2
         for i in range(7, 13):
-            for j in range(21, 56):
+            for j in range(51, 151):
                 seat = Seat(seatName=str(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
