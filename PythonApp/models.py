@@ -30,9 +30,6 @@ class Papers(E):
             return Papers.CCCD
 
 
-
-
-
 class BaseModel(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -49,6 +46,7 @@ class User(db.Model):
     owner = relationship('IDPaper', backref='user', lazy=True)
     customer = relationship('Customer', backref='user', lazy=True)
     employee = relationship('Employee', backref='user', lazy=True)
+
 
 class Customer(db.Model):
     __tablename__ = 'customer'
@@ -136,7 +134,7 @@ class AirPort(BaseModel):
 
 class AirRoute(BaseModel):
     __tablename__ = 'airroute'
-    name = Column(String(50), nullable = False)
+    name = Column(String(50), nullable=False)
     departure_id = Column(Integer, ForeignKey(AirPort.id), nullable=False)
     destination_id = Column(Integer, ForeignKey(AirPort.id), nullable=False)
     rule_id = Column(Integer, ForeignKey(Rule.id), nullable=False)
@@ -243,8 +241,8 @@ if __name__ == '__main__':
 
         # tao nv
 
-        u1 = User(Fname='Thụy', Lname='Cao Nguyên', DOB=datetime(2002, 1, 26), PhoneNum='0303030303')
-        u2 = User(Fname='Tài', Lname='Ngô Thị Kim', DOB=datetime(2002, 3, 18), PhoneNum='0707077007')
+        u1 = User(Fname='Thuy', Lname='Cao Nguyen', DOB=datetime(2002, 1, 26), PhoneNum='0303030303')
+        u2 = User(Fname='Tai', Lname='Ngo Thi Kim', DOB=datetime(2002, 3, 18), PhoneNum='0707077007')
         db.session.add_all([u1, u2])
         db.session.commit()
         e1 = Employee(id=u1.id, position='Quản trị')
@@ -265,21 +263,45 @@ if __name__ == '__main__':
 
         # Tao khach hang
 
-        u3 = User(Fname='Huy', Lname='Đoàn Gia', DOB=datetime(2002, 1, 3), PhoneNum='0909090909')
-        u4 = User(Fname='Nhi', Lname='Nguyễn Đặng Tuyết', DOB=datetime(1999, 11, 23), PhoneNum='0101010101')
-        u5 = User(Fname='Tiến', Lname='Phạm Gia', DOB=datetime(1999, 12, 7), PhoneNum='0202020202')
-        db.session.add_all([u3, u4, u5])
+        u3 = User(Fname='Huy', Lname='Doan Gia', DOB=datetime(2002, 1, 3), PhoneNum='0909090909')
+        u4 = User(Fname='Nhi', Lname='Nguyen Đang Tuyet', DOB=datetime(2002, 11, 23), PhoneNum='0101010101')
+        u5 = User(Fname='Tien', Lname='Pham Gia', DOB=datetime(1999, 12, 7), PhoneNum='0202020202')
+        u6 = User(Fname='Toi', Lname='Le Quang', DOB=datetime(2002, 9, 25), PhoneNum='1234566789')
+        u7 = User(Fname='Ly', Lname='Dinh Pham Yen', DOB=datetime(2002, 7, 15), PhoneNum='9999999999')
+        u8 = User(Fname='Linh', Lname='Lung thi', DOB=datetime(2008, 12, 7), PhoneNum='0202020202')
+        u9 = User(Fname='Thanh', Lname='Ngo Minh', DOB=datetime(2002, 1, 13), PhoneNum='1313131313')
+        u10 = User(Fname='Hieu', Lname='Tran Duc', DOB=datetime(2002, 1, 2), PhoneNum='1212121212')
+        u11 = User(Fname='A', Lname='Nguyen Van', DOB=datetime(1989, 6, 8), PhoneNum='6868686868')
+        u12 = User(Fname='B', Lname='Nguyen Thi', DOB=datetime(2001, 3, 4), PhoneNum='3434343434')
+        db.session.add_all([u3, u4, u5, u6, u7, u8, u9, u10, u11,u12])
         db.session.commit()
+
         c1 = Customer(id=u3.id)
         c2 = Customer(id=u4.id)
         c3 = Customer(id=u5.id)
-        db.session.add_all([c1, c2, c3])
+        c4 = Customer(id=u6.id)
+        c5 = Customer(id=u7.id)
+        c6 = Customer(id=u8.id)
+        c7 = Customer(id=u9.id)
+        c8 = Customer(id=u10.id)
+        c9 = Customer(id=u11.id)
+        c10 = Customer(id=u12.id)
+        db.session.add_all([c1, c2, c3, c4, c5,
+                            c6, c9, c10])
         db.session.commit()
         cccd_u3 = IDPaper(code='987', paper_type=Papers.CCCD, owner_id=u3.id)
         pp_u3 = IDPaper(code='919191', paper_type=Papers.PASSPORT, owner_id=u3.id)
         cccd_u4 = IDPaper(code='101010', paper_type=Papers.CCCD, owner_id=u4.id)
         cccd_u5 = IDPaper(code='78787', paper_type=Papers.CCCD, owner_id=u5.id)
-        db.session.add_all([cccd_u3, cccd_u4, cccd_u5, pp_u3])
+        pp_u6 = IDPaper(code='919191', paper_type=Papers.PASSPORT, owner_id=u6.id)
+        cccd_u7 = IDPaper(code='54444', paper_type=Papers.CCCD, owner_id=u7.id)
+        cccd_u8 = IDPaper(code='929292', paper_type=Papers.CCCD, owner_id=u8.id)
+        cccd_u9 = IDPaper(code='2222', paper_type=Papers.CCCD, owner_id=u9.id)
+        cccd_u10 = IDPaper(code='989898', paper_type=Papers.CCCD, owner_id=u10.id)
+        cccd_u11 = IDPaper(code='939393', paper_type=Papers.CCCD, owner_id=u11.id)
+        cccd_u12 = IDPaper(code='949494', paper_type=Papers.CCCD, owner_id=u12.id)
+        db.session.add_all([cccd_u3, cccd_u4, cccd_u5, pp_u3, pp_u6,
+                            cccd_u7, cccd_u8, cccd_u9, cccd_u10, cccd_u11, cccd_u12])
         db.session.commit()
         passw = str(hashlib.md5('1'.encode('utf-8')).digest())
         ac_u3 = Account(id=u3.id, email='2051052054huy@ou.edu.vn', username='Huy', password=passw)
@@ -313,27 +335,27 @@ if __name__ == '__main__':
 
         # Tao tuyen bay
 
-        ar1 = AirRoute(name ='Hà Nội - HCM',departure_id=ap1.id, destination_id=ap2.id, rule_id=r1.id)
-        ar2 = AirRoute(name = 'HCM - Đà Nẵng',departure_id=ap2.id, destination_id=ap3.id, rule_id=r1.id)
-        ar3 = AirRoute(name = 'HCM - Hàn Quốc',departure_id=ap2.id, destination_id=ap5.id, rule_id=r1.id)
-        ar4 = AirRoute(name = 'HCM - Pháp',departure_id=ap2.id, destination_id=ap10.id, rule_id=r1.id)
-        ar5 = AirRoute(name = 'Hà Nội - Khánh Hòa',departure_id=ap1.id, destination_id=ap7.id, rule_id=r1.id)
-        ar6 = AirRoute(name = 'Hà Nội - Hàn Quốc',departure_id=ap1.id, destination_id=ap5.id, rule_id=r1.id)
-        ar7 = AirRoute(name = 'Đà Nẵng - Hồ Chí Minh',departure_id=ap3.id, destination_id=ap2.id, rule_id=r1.id)
-        ar8 = AirRoute(name = 'HCM - Phú Quốc',departure_id=ap2.id, destination_id=ap8.id, rule_id=r1.id)
-        ar9 = AirRoute(name = 'Đà Nẵng - Phú Quốc',departure_id=ap3.id, destination_id=ap8.id, rule_id=r1.id)
-        ar10 = AirRoute(name = 'Phú Quốc - Hồ Chí Minh',departure_id=ap8.id, destination_id=ap2.id, rule_id=r1.id)
-        ar11 = AirRoute(name = 'Paris - Hồ Chí Minh',departure_id=ap10.id, destination_id=ap2.id, rule_id=r1.id)
-        ar12 = AirRoute(name = 'Melbourn - Hồ Chí Minh',departure_id=ap9.id, destination_id=ap2.id, rule_id=r1.id)
-        ar13 = AirRoute(name = 'HCM - New York',departure_id=ap2.id, destination_id=ap6.id, rule_id=r1.id)
+        ar1 = AirRoute(name='Hà Nội - HCM', departure_id=ap1.id, destination_id=ap2.id, rule_id=r1.id)
+        ar2 = AirRoute(name='HCM - Đà Nẵng', departure_id=ap2.id, destination_id=ap3.id, rule_id=r1.id)
+        ar3 = AirRoute(name='HCM - Hàn Quốc', departure_id=ap2.id, destination_id=ap5.id, rule_id=r1.id)
+        ar4 = AirRoute(name='HCM - Pháp', departure_id=ap2.id, destination_id=ap10.id, rule_id=r1.id)
+        ar5 = AirRoute(name='Hà Nội - Khánh Hòa', departure_id=ap1.id, destination_id=ap7.id, rule_id=r1.id)
+        ar6 = AirRoute(name='Hà Nội - Hàn Quốc', departure_id=ap1.id, destination_id=ap5.id, rule_id=r1.id)
+        ar7 = AirRoute(name='Đà Nẵng - Hồ Chí Minh', departure_id=ap3.id, destination_id=ap2.id, rule_id=r1.id)
+        ar8 = AirRoute(name='HCM - Phú Quốc', departure_id=ap2.id, destination_id=ap8.id, rule_id=r1.id)
+        ar9 = AirRoute(name='Đà Nẵng - Phú Quốc', departure_id=ap3.id, destination_id=ap8.id, rule_id=r1.id)
+        ar10 = AirRoute(name='Phú Quốc - Hồ Chí Minh', departure_id=ap8.id, destination_id=ap2.id, rule_id=r1.id)
+        ar11 = AirRoute(name='Paris - Hồ Chí Minh', departure_id=ap10.id, destination_id=ap2.id, rule_id=r1.id)
+        ar12 = AirRoute(name='Melbourn - Hồ Chí Minh', departure_id=ap9.id, destination_id=ap2.id, rule_id=r1.id)
+        ar13 = AirRoute(name='HCM - New York', departure_id=ap2.id, destination_id=ap6.id, rule_id=r1.id)
         db.session.add_all([ar1, ar2, ar3, ar4, ar5, ar6,
                             ar7, ar8, ar9, ar10, ar11, ar12, ar13])
         db.session.commit()
 
         # Tao trung gian
-        stopover1 = StopOver(airport_id=ap5.id, airroute_id=ar13.id, stop_minute = 22)
-        stopover2 = StopOver(airport_id=ap4.id, airroute_id=ar13.id, stop_minute = 24)
-        stopover3 = StopOver(airport_id=ap4.id, airroute_id=ar10.id, stop_minute = 20)
+        stopover1 = StopOver(airport_id=ap5.id, airroute_id=ar13.id, stop_minute=22)
+        stopover2 = StopOver(airport_id=ap4.id, airroute_id=ar13.id, stop_minute=24)
+        stopover3 = StopOver(airport_id=ap4.id, airroute_id=ar10.id, stop_minute=20)
 
         db.session.add_all([stopover1, stopover2, stopover3])
         db.session.commit()
@@ -400,30 +422,30 @@ if __name__ == '__main__':
 
         # Tao lich bay
 
-        sc1 = Schedule(id = f1.id, time=datetime(2023, 10, 11, 9, 10, 0, 0),
+        sc1 = Schedule(id=f1.id, time=datetime(2023, 10, 11, 9, 10, 0, 0),
                        num_o_Fseat=10, num_o_Sseat=40)
-        sc2 = Schedule(id = f2.id,time=datetime(2023, 1, 11, 22, 10, 0, 0),
-                       num_o_Fseat=15, num_o_Sseat=80)
-        sc3 = Schedule(id = f3.id,time=datetime(2022, 12, 30, 8, 10, 0, 0),
-                       num_o_Fseat=20, num_o_Sseat=70)
-        sc4 = Schedule(id = f4.id, time=datetime(2023, 3, 11, 12, 0, 0, 0),
+        sc2 = Schedule(id=f2.id, time=datetime(2023, 1, 11, 22, 10, 0, 0),
+                       num_o_Fseat=12, num_o_Sseat=80)
+        sc3 = Schedule(id=f3.id, time=datetime(2022, 12, 30, 8, 10, 0, 0),
+                       num_o_Fseat=20, num_o_Sseat=69)
+        sc4 = Schedule(id=f4.id, time=datetime(2023, 3, 11, 12, 0, 0, 0),
                        num_o_Fseat=40, num_o_Sseat=30)
-        sc5 = Schedule(id = f5.id,time=datetime(2023, 10, 11, 8, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=60)
-        sc6 = Schedule(id = f6.id,time=datetime(2023, 3, 11, 10, 10, 0, 0),
-                       num_o_Fseat=30, num_o_Sseat=50)
-        sc7 = Schedule(id = f7.id,time=datetime(2023, 4, 14, 4, 10, 0, 0),
-                       num_o_Fseat=40, num_o_Sseat=45)
-        sc8 = Schedule(id = f8.id,time=datetime(2023, 1, 1, 0, 10, 0, 0),
+        sc5 = Schedule(id=f5.id, time=datetime(2023, 10, 11, 8, 10, 0, 0),
+                       num_o_Fseat=10, num_o_Sseat=59)
+        sc6 = Schedule(id=f6.id, time=datetime(2023, 3, 11, 10, 10, 0, 0),
+                       num_o_Fseat=30, num_o_Sseat=49)
+        sc7 = Schedule(id=f7.id, time=datetime(2023, 4, 14, 4, 10, 0, 0),
+                       num_o_Fseat=39, num_o_Sseat=45)
+        sc8 = Schedule(id=f8.id, time=datetime(2023, 1, 1, 0, 10, 0, 0),
                        num_o_Fseat=20, num_o_Sseat=60)
-        sc9 = Schedule(id = f9.id,time=datetime(2023, 9, 9, 5, 10, 0, 0),
-                       num_o_Fseat=10, num_o_Sseat=70)
-        sc10 = Schedule(id = f10.id,time=datetime(2023, 6, 7, 21, 10, 0, 0),
-                        num_o_Fseat=10, num_o_Sseat=40)
-        sc11 = Schedule(id = f11.id,time=datetime(2023, 5, 11, 18, 1, 0, 0),
-                        num_o_Fseat=20, num_o_Sseat=50)
-        sc12 = Schedule(id = f12.id, time=datetime(2023, 3, 3, 23, 10, 0, 0),
-                        num_o_Fseat=10, num_o_Sseat=90)
+        sc9 = Schedule(id=f9.id, time=datetime(2023, 9, 9, 5, 10, 0, 0),
+                       num_o_Fseat=10, num_o_Sseat=69)
+        sc10 = Schedule(id=f10.id, time=datetime(2023, 6, 7, 21, 10, 0, 0),
+                        num_o_Fseat=10, num_o_Sseat=39)
+        sc11 = Schedule(id=f11.id, time=datetime(2023, 5, 11, 18, 1, 0, 0),
+                        num_o_Fseat=19, num_o_Sseat=49)
+        sc12 = Schedule(id=f12.id, time=datetime(2023, 3, 3, 23, 10, 0, 0),
+                        num_o_Fseat=9, num_o_Sseat=90)
 
         db.session.add_all([sc1, sc2, sc3, sc4, sc5, sc6,
                             sc7, sc8, sc9, sc10, sc11, sc12])
@@ -458,3 +480,31 @@ if __name__ == '__main__':
                 seat = Seat(seatName=str(j), Sclass=2, airplane_id=i)
                 db.session.add(seat)
                 db.session.commit()
+
+        ticket1 = Ticket(seat_class=1, owner_id=3, buyer_id=3, saleman_id=2, flight_id=2, seat_id=15,
+                         sold_time=datetime(2022, 12, 4, 18, 6, 50))
+        ticket2 = Ticket(seat_class=2, owner_id=4, buyer_id=4, saleman_id=2, flight_id=6, seat_id=50,
+                         sold_time=datetime(2022, 2, 4, 18, 16, 1))
+        ticket3 = Ticket(seat_class=2, owner_id=6, buyer_id=6, saleman_id=2, flight_id=2, seat_id=80,
+                         sold_time=datetime(2022, 1, 4, 18, 16, 1))
+        ticket4 = Ticket(seat_class=2, owner_id=7, buyer_id=7, saleman_id=2, flight_id=5, seat_id=60,
+                         sold_time=datetime(2022, 1, 4, 18, 16, 1))
+        ticket5 = Ticket(seat_class=2, owner_id=8, buyer_id=7, saleman_id=2, flight_id=2, seat_id=14,
+                         sold_time=datetime(2022, 1, 4, 18, 16, 1))
+        ticket6 = Ticket(seat_class=1, owner_id=5, buyer_id=6, saleman_id=2, flight_id=12, seat_id=10,
+                         sold_time=datetime(2022, 2, 4, 18, 16, 1))
+        ticket7 = Ticket(seat_class=2, owner_id=8, buyer_id=8, saleman_id=2, flight_id=9, seat_id=70,
+                         sold_time=datetime(2022, 5, 4, 18, 16, 1))
+        ticket8 = Ticket(seat_class=1, owner_id=7, buyer_id=6, saleman_id=2, flight_id=7, seat_id=40,
+                         sold_time=datetime(2022, 4, 4, 18, 16, 1))
+        ticket9 = Ticket(seat_class=2, owner_id=3, buyer_id=3, saleman_id=2, flight_id=11, seat_id=50,
+                         sold_time=datetime(2022, 7, 4, 18, 16, 1))
+        ticket10 = Ticket(seat_class=1, owner_id=12, buyer_id=12, saleman_id=2, flight_id=2, seat_id=12,
+                          sold_time=datetime(2022, 8, 4, 18, 16, 1))
+        ticket11 = Ticket(seat_class=2, owner_id=11, buyer_id=11, saleman_id=2, flight_id=10, seat_id=40,
+                         sold_time=datetime(2022, 9, 4, 18, 16, 1))
+        ticket12 = Ticket(seat_class=1, owner_id=11, buyer_id=11, saleman_id=2, flight_id=11, seat_id=20,
+                         sold_time=datetime(2022, 10, 4, 18, 16, 1))
+        db.session.add_all([ticket1, ticket2, ticket3, ticket4, ticket5, ticket6,
+                            ticket7, ticket8, ticket9, ticket10, ticket11, ticket12])
+        db.session.commit()

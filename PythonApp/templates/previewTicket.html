@@ -7,55 +7,57 @@
 </div>
 {% endif %}
 <link rel="stylesheet" href="{{url_for('static', filename = 'css/previewTicket.css')}}">
-<div class="container" style="margin-top:2%">
-    {% for t in list %}
-    <div class="container1">
-        <div class="ticket basic">
-            <p>Admit One</p>
-        </div>
-        <div class="ticket airline">
-            <div class="top">
-                <h1>boarding pass</h1>
-                <div class="big">
-                    <p class="from">Eastin</p>
-                    <p class="to">Airline</p>
-                </div>
-                <div class="top--side">
-                    <i class="fas fa-plane"></i>
-<!--                    <p>{{t.flight.airroute.departure}}</p>-->
-<!--                    <p>{{t.flight.airroute.destination}}</p>-->
-                </div>
+<form method="post">
+    <div class="container" style="margin-top:2%">
+        {% for t in list %}
+        <div class="container1">
+            <div class="ticket basic">
+                <p>Admit One</p>
             </div>
-            <div class="bottom1">
-                <div class="column1">
-                    <div class="row1 row-1a">
-                        <p><span>Flight</span>{{t.flight.id}} </p>
-                        <p class="row1--right1"><span>Ticket code:</span>{{t.id}}</p>
+            <div class="ticket airline">
+                <div class="top">
+                    <h1>boarding pass</h1>
+                    <div class="big">
+                        <p class="from">Eastin</p>
+                        <p class="to">Airline</p>
                     </div>
-                    <div class="row1 row-1a">
-                        <p><span>Boards</span>{{t.flight.schedule[0].time}}</p>
-                        <p class="row1--center1"><span>Departs</span>{{t.flight.airroute.departure}}</p>
-                        <p class="row1--right1"><span>Arrives</span>{{t.flight.airroute.destination}}</p>
-                    </div>
-                    <div class="row1 row-1a">
-                        <p><span>Passenger</span>{{t.owner.user.Fname}} <br> {{t.owner.user.Lname}}</p>
-                        <p class="row--center"><span>Seat</span>{{t.seat}}</p>
-                        <p class="row--right"><span>Seat class</span>{{t.seat_class}}</p>
+                    <div class="top--side">
+                        <i class="fas fa-plane"></i>
+                        <!--                    <p>{{t.flight.airroute.departure}}</p>-->
+                        <!--                    <p>{{t.flight.airroute.destination}}</p>-->
                     </div>
                 </div>
-                <div class="bar--code"></div>
+                <div class="bottom1">
+                    <div class="column1">
+                        <div class="row1 row-1a">
+                            <p><span>Flight</span>{{t.flight.id}} </p>
+                            <p class="row1--right1"><span>Ticket code:</span>{{t.id}}</p>
+                        </div>
+                        <div class="row1 row-1a">
+                            <p><span>Boards</span>{{t.flight.schedule[0].time}}</p>
+                            <p class="row1--center1"><span>Departs</span>{{t.flight.airroute.departure}}</p>
+                            <p class="row1--right1"><span>Arrives</span>{{t.flight.airroute.destination}}</p>
+                        </div>
+                        <div class="row1 row-1a">
+                            <p><span>Passenger</span>{{t.owner.user.Fname}} <br> {{t.owner.user.Lname}}</p>
+                            <p class="row--center"><span>Seat</span>{{t.seat}}</p>
+                            <p class="row--right"><span>Seat class</span>{{t.seat_class}}</p>
+                        </div>
+                    </div>
+                    <div class="bar--code"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- partial -->
+    <!-- partial -->
 
 
-{% endfor %}
+    {% endfor %}
 
-<script src=" 'jc/preTicket.js'"></script>
-</div>
-<div class="text-center" >
-    <button class="btn btn-primary " type="submit">In vé</button>
-</div>
+    <script src=" 'jc/preTicket.js'"></script>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" name="print" type="submit">In vé</button>
+    </div>
+</form>
 {% endblock %}

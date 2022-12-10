@@ -36,6 +36,11 @@ class AuthView(BaseView):
         return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
 
 
+class AirPortView(AuthModelView):
+    form_columns = ('name', 'location')
+
+
+
 class AirRouteView(AuthModelView):
     # //column_list = []
     column_searchable_list = ['name']
@@ -121,7 +126,7 @@ class LogoutView(AuthView):
 
 
 admin = Admin(app=app, name='Quản trị sân bay', template_mode='bootstrap4')
-admin.add_view(AuthModelView(AirPort, db.session, name='Sân bay'))
+admin.add_view(AirPortView(AirPort, db.session, name='Sân bay'))
 admin.add_view(AirRouteView(AirRoute, db.session, name='Tuyến bay'))
 admin.add_view(AuthModelView(StopOver, db.session, name='Trung chuyển'))
 admin.add_view(StatsView(name='Thống kê - báo cáo'))

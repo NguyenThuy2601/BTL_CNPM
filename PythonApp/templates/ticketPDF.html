@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="">
+
+    <script src="https://kit.fontawesome.com/18bf94df79.js" crossorigin="anonymous"></script>
+
+
+
+</head>
+<style>
+.container1 {
+  position: relative;
+  width: 75%;
+  height: 1000vh;
+
+}
+.container1 .ticket {
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 900vh;
+}
+.container1 .basic {
+  display: none;
+}
+
+.airline {
+  display: block;
+  height: 1000px;
+  width: 100%;
+  box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  z-index: 3;
+}
+.airline .top {
+  height: 300px;
+  background: #86B817;
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+  color: white;
+}
+.airline .top h1 {
+  text-transform: uppercase;
+  font-size: 1em;
+  letter-spacing: 2;
+  text-align: center;
+  position: absolute;
+  top: 30px;
+  left: 39%;
+  transform: translateX(-50%);
+}
+.airline .bottom1 {
+  background: #fff;
+  border-bottom-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  margin: 2.5%;
+
+}
+
+.top .big {
+  position: absolute;
+  top: 100px;
+  font-size: 8em;
+  font-weight: 700;
+  line-height: 0.8;
+}
+.top .big .from {
+  color: white;
+  text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+}
+.top .big .to {
+  position: absolute;
+  left: 32px;
+  font-size: 0.6em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.top .big .to i {
+  margin-top: 5px;
+  margin-right: 10px;
+  font-size: 15px;
+}
+.top--side {
+  position: absolute;
+  right: 35px;
+  top: 110px;
+  text-align: right;
+}
+.top--side i {
+  font-size: 25px;
+  margin-bottom: 18px;
+}
+.top--side p {
+  font-size: 10px;
+  font-weight: 700;
+}
+.top--side p + p {
+  margin-bottom: 8px;
+}
+
+.bottom1 p {
+  display: flex;
+  display: -webkit-box;
+  flex-direction: column;
+  font-size: 1em;
+  font-weight: 700;
+  margin-top: 10%;
+}
+.bottom1 p span {
+  font-weight: 400;
+  font-size: 1em;
+  color: #6c6c6c;
+}
+.bottom1 .column1 {
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+.bottom1 .row-1a {
+  display: -webkit-box;
+  -webkit-box-pack: justify;
+}
+.bottom1 .row1--right1 {
+  text-align: right;
+  text-rendering: geometricPrecision;
+}
+.bottom1 .row1--center1 {
+  text-align: center;
+  text-rendering: geometricPrecision;
+}
+.bottom1 .row-2 {
+  margin: 30px 0 60px 0;
+  position: relative;
+}
+.bottom1 .row-2::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  bottom: -30px;
+  left: 0;
+  background: #000;
+  height: 1px;
+}
+.bottom1 .bar--code {
+  height: 100px;
+  width: 50%;
+  margin: 0 auto;
+  margin-left: 33%;
+  position: relative;
+}
+.bottom1 .bar--code::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 100%;
+  background: #000;
+  top: 100%;
+  left: 0;
+  box-shadow: 10px 0 #000, 30px 0 #000, 40px 0 #000, 67px 0 #000, 90px 0 #000, 100px 0 #000, 180px 0 #000, 165px 0 #000, 200px 0 #000, 210px 0 #000, 135px 0 #000, 120px 0 #000;
+}
+.bottom1 .bar--code::before {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  background: #000;
+  top: 100%;
+  left: 15px;
+  box-shadow: 12px 0 #000, -4px 0 #000, 45px 0 #000, 65px 0 #000, 72px 0 #000, 78px 0 #000, 97px 0 #000, 150px 0 #000, 165px 0 #000, 180px 0 #000, 135px 0 #000, 120px 0 #000;
+}
+</style>
+<body>
+  {% for t in list %}
+<div class="container" style="padding-bottom:146%">
+     <div class="container">
+        <div class="container1">
+            <div class="ticket basic">
+                <p>Admit One</p>
+            </div>
+            <div class="ticket airline">
+                <div class="top">
+                    <h1>boarding pass</h1>
+                    <div class="big">
+                        <p class="from">Eastin</p>
+                        <p class="to">Airline</p>
+                    </div>
+                    <div class="top--side">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                </div>
+                <div class="bottom1">
+                    <div class="column1">
+                        <div class="row1 row-1a">
+                            <p><span>Flight: </span>{{t.flight.id}} </p>
+                            <p class="row1--right1"><span>Ticket code: </span>{{t.id}}</p>
+                        </div>
+                        <div class="row1 row-1a">
+                            <p><span>Boards</span> <br>{{t.flight.schedule[0].time}}</p>
+                            <p class="row1--center1"><span>Departs</span><br>{{t.flight.airroute.departure}}</p>
+                            <p class="row1--right1"><span>Arrives</span> <br>{{t.flight.airroute.destination}}</p>
+                        </div>
+                        <div class="row1 row-1a">
+                            <p><span>Passenger</span> <br>{{t.owner.user.Fname}} <br> {{t.owner.user.Lname}}</p>
+                            <p class="row--center"><span>Seat: </span> <br>{{t.seat}}</p>
+                            <p class="row--right"><span>Seat class: </span> <br>{{t.seat_class}}</p>
+                        </div>
+                    </div>
+                    <div class="bar--code"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- partial -->
+
+
+</div>
+{% endfor %}
+</body>
+</html>

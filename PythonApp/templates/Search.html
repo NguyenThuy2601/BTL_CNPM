@@ -54,6 +54,7 @@
                 {% if current_user.is_authenticated %}
                 <div class="card-body text-center">
                     <a href="/flight/{{f.id}}" class="btn btn-primary" style="width:100px">Đặt vé</a>
+                    <a href="/searchTicket/{{f.id}}/{{None}}" class="btn btn-primary" style="width:100px">Đổi vé</a>
                 </div>
                 {% endif %}
 

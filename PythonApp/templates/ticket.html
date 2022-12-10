@@ -6,33 +6,33 @@
     {{err_msg}}
 </div>
 {% endif %}
-<div class="container" style="margin-top:2%">
-    <form method="post" accept-charset="utf-8">
-        <h2 style="margin: 3%">Hạng {{sclass}} người lớn: {{Adult}} vé</h2>
-        {% for i in range(0,Adult) %}
-        <div style="background-color:  #86B817; border-radius: 15px 15px 0 0; ">
-            <h2 style="margin-bottom: 0%; padding: 2%">Người lớn {{i+1}}</h2>
-        </div>
-        <div class="container"
-             style="Border-style: solid; margin-bottom: 2.5%; border-radius: 0 0 15px 15px; padding: 3%">
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/ticket.css')}}">
 
+<div class="container">
+    <form method="post" accept-charset="utf-8">
+        <h2 class="form-title">Hạng {{sclass}} người lớn: {{Adult}} vé</h2>
+        {% for i in range(0,Adult) %}
+        <div  class="form-header">
+            <h2 class="header-text">Người lớn {{i+1}}</h2>
+        </div>
+        <div class="plus">
             <h3> Thông tin vé</h3>
             <div class="input-group mb-3">
                 <span class="input-group-text">Chuyến bay</span>
-                <input type="text" class="form-control" style="background-color:white" value="{{f.id}} {{f.airroute}}"
+                <input type="text" class="form-control"  value="{{f.id}} {{f.airroute}}"
                        disabled>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Hạng vé</span>
-                <input type="text" class="form-control" style="background-color:white" value="{{sclass}}" disabled>
+                <input type="text" class="form-control"  value="{{sclass}}" disabled>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Giá tiền</span>
                 {% if sclass == 1 %}
-                <input type="text" class="form-control" style="background-color:white" value="{{f.ticketprice.Fprice}}"
+                <input type="text" class="form-control"  value="{{f.ticketprice.Fprice}}"
                        disabled>
                 {% else %}
-                <input type="text" class="form-control" style="background-color:white" value="{{f.ticketprice.Sprice}}"
+                <input type="text" class="form-control"  value="{{f.ticketprice.Sprice}}"
                        disabled>
                 {% endif %}
             </div>
@@ -57,7 +57,7 @@
             <h3>Giấy tờ</h3>
             <div class="input-group mb-3">
                 <span class="input-group-text">
-                    <select class="form-control" name="paperType" style="background-color: #e9ecef; border:#e9ecef">
+                    <select class="form-control select" name="paperType">
                       <option value="2" selected>CMND</option>
                       <option value="1">Passport</option>
                     </select>
@@ -66,30 +66,30 @@
             </div>
         </div>
         {% endfor %}
-        <h2>Hạng {{sclass}} trẻ em: {{Child}} vé</h2>
+        <h2 class="form-title">Hạng {{sclass}} trẻ em: {{Child}} vé</h2>
         {% for i in range(0,Child) %}
-        <div style="background-color:  #86B817; border-radius: 15px 15px 0 0; margin-top: 3%">
-            <h2 style="margin-bottom: 0%; padding: 2%">Trẻ em {{i+1}}</h2>
+        <div class="form-header">
+            <h2 class="header-text">Trẻ em {{i+1}}</h2>
         </div>
-        <div class="container" style="Border-style: solid; padding: 2.5%; border-radius: 0 0 15px 15px">
+        <div class="plus">
 
             <h3> Thông tin vé</h3>
             <div class="input-group mb-3">
                 <span class="input-group-text">Chuyến bay</span>
-                <input type="text" class="form-control" style="background-color:white" value="{{f.id}} {{f.airroute}}"
+                <input type="text" class="form-control"  value="{{f.id}} {{f.airroute}}"
                        disabled>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Hạng vé</span>
-                <input type="text" class="form-control" style="background-color:white" value="{{sclass}}" disabled>
+                <input type="text" class="form-control"  value="{{sclass}}" disabled>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">Giá tiền</span>
                 {% if sclass == 1 %}
-                <input type="text" class="form-control" style="background-color:white" value="{{f.ticketprice.Fprice}}"
+                <input type="text" class="form-control"  value="{{f.ticketprice.Fprice}}"
                        disabled>
                 {% else %}
-                <input type="text" class="form-control" style="background-color:white" value="{{f.ticketprice.Sprice}}"
+                <input type="text" class="form-control"  value="{{f.ticketprice.Sprice}}"
                        disabled>
                 {% endif %}
             </div>
@@ -119,8 +119,43 @@
             </div>
         </div>
         {% endfor %}
+        <h2 class="form-title">Người mua: </h2>
+        <div  class="form-header">
+            <h2 class="header-text">Thông tin người mua</h2>
+        </div>
+        <div class="container plus">
+            <h3> Thông tin khách hàng</h3>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Tên</span>
+                <input type="text" class="form-control" name="BuyerFname" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Họ lót</span>
+                <input type="text" class="form-control" name="BuyerLname" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Ngày sinh</span>
+                <input class="form-control" type="date" name="BuyerDOB" required>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Điện thoại</span>
+                <input type="text" class="form-control" minlength="10" maxlength="10" name="BuyerPhone" required>
+            </div>
+            <h3>Giấy tờ</h3>
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <select class="form-control select" name="BuyerpaperType">
+                      <option value="2" selected>CMND</option>
+                      <option value="1">Passport</option>
+                    </select>
+                </span>
+                <input type="text" class="form-control" name="BuyerPaper" required>
+            </div>
+        </div>
         <h2>Thành tiền: {{ "{:,.1f}".format(cost) }} VNĐ</h2>
         <button class="btn btn-primary" type="submit" style="margin-top: 3%">Đặt vé</button>
     </form>
+
 </div>
 {% endblock %}
