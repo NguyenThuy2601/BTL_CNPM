@@ -69,6 +69,14 @@ def get_customer_by_paper(s):
     else:
         return None
 
+def get_remaining_seat(f_id, sclass):
+    num_o_ticket = Ticket.query.filter(Ticket.flight_id == f_id).filter(Ticket.seat_class == sclass).count()
+    flight = get_flight_by_id(id=f_id)
+    if sclass == 1:
+        num_o_seat = flight.schedule[0].num_o_Fseat
+    else:
+        num_o_seat = flight.schedule[0].num_o_Sseat
+    return num_o_seat - num_o_ticket
 
 def update_seat(f, quantity, sclass):
     if sclass == 1:
@@ -81,8 +89,9 @@ def update_seat(f, quantity, sclass):
 
 def get_seat(f_id, sclass):
     f = get_flight_by_id(f_id)
+    seat_num = get_remaining_seat(f_id=f_id, sclass=sclass)
     if sclass == 1:
-        seat_num = f.schedule[0].num_o_Fseat
+        seat_num = get_remaining_seat(f_id=f_id, sclass=sclass)
     else:
         seat_num = f.schedule[0].num_o_Sseat
     update_seat(f, seat_num - 1, sclass)
@@ -124,9 +133,9 @@ def get_customer_by_name_and_dob(Fname, Lname, dob):
         return None
 
 
-def create_ticket(owner_id, sclass, flight, buyer_id, seller_id):
-    seat_id = get_seat(f_id=flight, sclass=sclass)
-    ticket = Ticket(seat_class=sclass, owner_id=owner_id, saleman_id=seller_id, buyer_id=buyer_id, flight_id=flight,
+def create_ticket(owner_id, sclass, flight_id, buyer_id, seller_id):
+    seat_id = get_remaining_seat(f_id=flight_id, sclass=sclass)
+    ticket = Ticket(seat_class=sclass, owner_id=owner_id, saleman_id=seller_id, buyer_id=buyer_id, flight_id=flight_id,
                     seat_id=seat_id, sold_time=datetime.now())
     db.session.add(ticket)
     db.session.commit()
@@ -282,44 +291,29 @@ def get_total_income(total_stat):
     return sum
 
 
-def update_remaining_seat(flight_id, sclass):
-    flight = Flight.query.get(flight_id)
-    if sclass == 1:
-        flight.schedule[0].num_o_Fseat += 1
-    else:
-        flight.schedule[0].num_o_Sseat += 1
-    db.session.add(flight)
-    db.session.commit()
-    return True
+# def update_remaining_seat(flight_id, sclass):
+#     flight = Flight.query.get(flight_id)
+#     if sclass == 1:
+#         flight.schedule[0].num_o_Fseat += 1
+#     else:
+#         flight.schedule[0].num_o_Sseat += 1
+#     db.session.add(flight)
+#     db.session.commit()
+#     return True
 
 
 def updateTicket(flight_id, ticket_id):
     ticket = Ticket.query.get(ticket_id)
-    status = update_remaining_seat(ticket.flight_id,ticket.seat_class)
-    if status:
-        ticket.flight_id = flight_id
-        ticket.seat_id = get_seat(flight_id, ticket.seat_class)
-        db.session.add(ticket)
-        db.session.commit()
-        return ticket.id
+    ticket.flight_id = flight_id
+    ticket.seat_id = get_remaining_seat(f_id=flight_id, sclass=ticket.seat_class)
+    db.session.add(ticket)
+    db.session.commit()
+    return ticket.id
 
 
 def get_ticket_by_id(id):
     return Ticket.query.get(id)
 
-
-def check_remaining_seat(id, sclass):
-    f = get_flight_by_id(id)
-    if sclass == 1:
-        if f.schedule[0].num_o_Fseat > 0:
-            return True
-        else:
-            return False
-    else:
-        if f.schedule[0].num_o_Sseat > 0:
-            return True
-        else:
-            return False
 
 
 if __name__ == "__main__":
@@ -387,4 +381,5 @@ if __name__ == "__main__":
         # print(Flight.query.get(1).schedule[0].num_o_Fseat)
         # print(update_remaining_seat(1, 1))
 
-        print(create_ticket(owner_id=4, sclass=1, flight=2, buyer_id=4, seller_id=2))
+        # print(create_ticket(owner_id=4, sclass=1, flight=2, buyer_id=4, seller_id=2))
+        print(get_remaining_seat(f_id=10, sclass=2))

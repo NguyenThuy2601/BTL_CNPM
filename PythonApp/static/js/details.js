@@ -13,8 +13,8 @@ function setMax(obj, r1, r2) {
             var adult = document.getElementById('Adult')
             adult.setAttribute("max", r2)
         }
-    }
-    function changeMaxAdult(r1, r2)
+ }
+function changeMaxAdult(r1, r2)
     {
         adult = document.getElementById('Adult')
         child = document.getElementById('Child')
@@ -33,8 +33,8 @@ function setMax(obj, r1, r2) {
 }
 
 
-    function changeMaxChild(r1, r2)
-    {
+function changeMaxChild(r1, r2)
+{
         adult = document.getElementById('Adult')
         child = document.getElementById('Child')
         oldValue = child.defaultValue
@@ -49,4 +49,4 @@ function setMax(obj, r1, r2) {
             newRule = ruleMax + (oldValue - newValue)
         adult.setAttribute("max", newRule)
         child.defaultValue = newValue
-    }
+}

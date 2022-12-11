@@ -25,22 +25,22 @@
         <h3>Giá vé hạng 1: {{ "{:,.1f}".format(flight.ticketprice.Fprice) }} VND</h3>
         <form>
             <input type="radio" id="class1" name="seatclass" value="1" checked
-                   onchange="setMax(this ,{{flight.schedule[0].num_o_Fseat}}, {{flight.schedule[0].num_o_Sseat}})">
+                   onchange="setMax(this ,{{Fseat_num}}, {{Sseat_num}})">
             <label for="class1" style="margin:2%"> Hạng 1</label>
             <input type="radio" id="class2" name="seatclass" value="2"
-                   onchange="setMax(this ,{{flight.schedule[0].num_o_Fseat}}, {{flight.schedule[0].num_o_Sseat}})">
+                   onchange="setMax(this ,{{Fseat_num}}, {{Sseat_num}})">
             <label for="class2" style="margin-bottom: 3%"> Hạng 2</label>
             <div style="text-indent: 2%">
                 <label for="Adult" style="margin-right: 2.4%"> Người lớn: </label>
-                <input type="number" id="Adult" name="adult" step="1" max="{{flight.schedule[0].num_o_Fseat}}"
+                <input type="number" id="Adult" name="adult" step="1" max="{{Fseat_num}}"
                        min="0" value=0
-                       onchange="changeMaxAdult({{flight.schedule[0].num_o_Fseat}}, {{flight.schedule[0].num_o_Sseat}})">
+                       onchange="changeMaxAdult({{Fseat_num}}, {{Sseat_num}})">
             </div>
             <div style="text-indent: 2%">
                 <label for="Child" style="margin-top: 1%; margin-right: 5%"> Trẻ em: </label>
-                <input type="number" id="Child" name="child" step="1" max="{{flight.schedule[0].num_o_Fseat}}"
+                <input type="number" id="Child" name="child" step="1" max="{{Fseat_num}}"
                        min="0" value="0"
-                       onchange="changeMaxChild({{flight.schedule[0].num_o_Fseat}}, {{flight.schedule[0].num_o_Sseat}})">
+                       onchange="changeMaxChild({{Fseat_num}}, {{Sseat_num}})">
             </div>
             <button class="btn btn-primary" type="submit" style="margin-top: 3%">Đặt mua</button>
         </form>

@@ -29,9 +29,8 @@ def index():
 def details(flight_id):
     f = LoadData.get_flight_by_id(flight_id)
     st = LoadData.get_stopover_by_airroute_id(f.air_route_id)
-    remaining_Fseat = f.schedule[0].num_o_Fseat
-    remaining_Sseat = f.schedule[0].num_o_Sseat
-    flight_time = f.schedule[0].time
+    Fseat_num = LoadData.get_remaining_seat(f_id=flight_id, sclass=1)
+    Sseat_num = LoadData.get_remaining_seat(f_id=flight_id, sclass=2)
     option = request.args.get("seatclass")
     err_msg = ''
     try:
@@ -40,15 +39,15 @@ def details(flight_id):
     except:
         Adult = Child = 0
     if Adult or Child:
-        if flight_time - datetime.datetime.now() > timedelta(hours=f.airroute.rule.selling_ticket_hour):
-            if (remaining_Fseat >= Adult + Child) and (remaining_Sseat >= Adult + Child):
+        if f.schedule[0].time - datetime.datetime.now() > timedelta(hours=f.airroute.rule.selling_ticket_hour):
+            if (LoadData.get_remaining_seat(f_id=flight_id, sclass=option) >= Adult + Child):
                 return redirect(
                     url_for('ticket', Adult=Adult, Child=Child, f_id=flight_id, sclass=option))
             else:
                 err_msg = 'Số lượng vé mua vượt quá số lượng vé còn'
         else:
             err_msg = 'Đã quá thời gian mua vé'
-    return render_template('details.html', flight=f, stopover=st, err_msg=err_msg)
+    return render_template('details.html', flight=f, stopover=st, Fseat_num=Fseat_num, Sseat_num=Sseat_num ,err_msg=err_msg)
 
 
 def ticket(Adult, Child, f_id, sclass):
@@ -93,14 +92,14 @@ def ticket(Adult, Child, f_id, sclass):
             user1 = LoadData.get_customer_by_paper(adult_pp[i])
             if user1:
                 LoadData.update_phone_number(adult_phone[i], user1)
-                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=buyer,
+                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight_id=f_id, buyer_id=buyer,
                                                 seller_id=current_user.id)
                 TicketList.append(ticket)
             else:
                 user1 = LoadData.get_customer_by_name_and_dob(adult_Fname[i], adult_Lname[i], adult_DOB[i])
                 if user1:
                     LoadData.update_phone_number(adult_phone[i], user1)
-                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=buyer,
+                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass,flight_id=f_id, buyer_id=buyer,
                                                     seller_id=current_user.id)
                     LoadData.create_id_paper(adult_pp[i], models.Papers.from_str(pp_type[i]), user1)
                     TicketList.append(ticket)
@@ -109,7 +108,7 @@ def ticket(Adult, Child, f_id, sclass):
                                                         phone=adult_phone[i],
                                                         dob=adult_DOB[i])
                     LoadData.create_id_paper(adult_pp[i], models.Papers.from_str(pp_type[i]), new_user)
-                    ticket = LoadData.create_ticket(owner_id=new_user, sclass=sclass, flight=f_id, buyer_id=buyer,
+                    ticket = LoadData.create_ticket(owner_id=new_user, sclass=sclass, flight_id=f_id, buyer_id=buyer,
                                                     seller_id=current_user.id)
                     TicketList.append(ticket)
 
@@ -119,13 +118,13 @@ def ticket(Adult, Child, f_id, sclass):
                 user1 = LoadData.get_customer_by_paper(child_pp[i])
             if user1:
                 LoadData.update_phone_number(adult_phone[i], user1)
-                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=buyer, seller_id=2)
+                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight_id=f_id, buyer_id=buyer, seller_id=2)
                 TicketList.append(ticket)
             else:
                 user1 = LoadData.get_customer_by_name_and_dob(child_Fname[i], child_Lname[i], child_DOB[i])
                 if user1:
                     LoadData.update_phone_number(child_phone[i], user1)
-                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight=f_id, buyer_id=buyer,
+                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight_id=f_id, buyer_id=buyer,
                                                     seller_id=2)
                     if child_pp[i]:
                         LoadData.create_id_paper(child_pp[i], models.Papers.PASSPORT, user1)
@@ -135,19 +134,19 @@ def ticket(Adult, Child, f_id, sclass):
                                                         phone=child_phone[i])
                     if child_pp[i]:
                         LoadData.create_id_paper(child_pp[i], models.Papers.PASSPORT, new_user.id)
-                    ticket = LoadData.create_ticket(owner_id=new_user, sclass=sclass, flight=f_id, buyer_id=buyer,
+                    ticket = LoadData.create_ticket(owner_id=new_user, sclass=sclass, flight_id=f_id, buyer_id=buyer,
                                                     seller_id=2)
                     TicketList.append(ticket)
         return redirect(url_for('previewTicket', list=TicketList))
 
-    return render_template('/ticket.html', Adult=Adult, Child=Child, f=f, sclass=sclass, err_msg=err_msg, cost=total_cost)
+    return render_template('/ticket.html', Adult=Adult, Child=Child, f=f, sclass=sclass, err_msg=err_msg,
+                           cost=total_cost)
 
 
 def convert_to_pdf(list):
     Tlist = list.strip('][').split(',')
     for i in range(0, len(Tlist)):
         Tlist[i] = LoadData.get_ticket_by_id(Tlist[i])
-
 
     rendered = render_template("/ticketPDF.html", list=Tlist, name='Thuy')
     pdf = pdfkit.from_string(rendered)
@@ -172,7 +171,7 @@ def previewTicket(list):
 
 @annonynous_user
 def login_my_user():
-    err_msg=''
+    err_msg = ''
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -200,15 +199,15 @@ def searchTicket(flight_id, err_msg=None):
     ticket = LoadData.get_ticket(ticket_id)
     flight = LoadData.get_flight_by_id(flight_id)
 
-    return render_template('searchTicket.html', ticket=ticket, f =flight, err_msg=err_msg )
+    return render_template('searchTicket.html', ticket=ticket, f=flight, err_msg=err_msg)
 
 
 def updateTicket(flight_id, ticket_id):
     ticket = LoadData.get_ticket_by_id(ticket_id)
-    err_msg=''
-    if LoadData.check_remaining_seat(ticket_id, ticket.seat_class):
-        Tlist =[]
-        ticket= LoadData.updateTicket(flight_id=flight_id, ticket_id=ticket_id)
+    err_msg = ''
+    if LoadData.get_remaining_seat(f_id=flight_id, sclass=ticket.seat_class):
+        Tlist = []
+        ticket = LoadData.updateTicket(flight_id=flight_id, ticket_id=ticket_id)
         Tlist.append(ticket)
         return redirect(url_for('previewTicket', list=Tlist))
     else:
