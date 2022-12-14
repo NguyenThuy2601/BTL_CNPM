@@ -1,9 +1,8 @@
 import datetime
 from sqlalchemy import func
-from sqlalchemy.sql import extract
 from PythonApp import app, db
-from PythonApp.models import Account, Flight, AirRoute, AirPort, Schedule, StopOver, User, IDPaper, Papers, Ticket, \
-    Seat, Customer, TicketPrice
+from PythonApp.models import Account, Flight, AirRoute, AirPort, Schedule, StopOver, User, IDPaper, Ticket, \
+    Customer, TicketPrice
 from datetime import datetime
 import hashlib
 from sqlalchemy.orm import aliased
@@ -20,36 +19,45 @@ def get_user_by_id(user_id):
     return Account.query.get(user_id)
 
 
-def get_airroute_id_by_name(departure, destination):
+def get_airroute_id_by_name(departure=None, destination=None):
     dep = aliased(AirPort)
     des = aliased(AirPort)
     query = AirRoute.query.join(dep, dep.id == AirRoute.departure_id) \
-        .join(des, des.id == AirRoute.destination_id) \
-        .filter(dep.location.contains(departure)) \
-        .filter(des.location.contains(destination)).first()
+        .join(des, des.id == AirRoute.destination_id)
+    if departure:
+        query = query.filter(dep.location.contains(departure))
+    if destination:
+        query = query.filter(des.location.contains(destination))
+    query = query.first()
     if query:
         return query.id
     else:
         return False
 
 
-def get_flight(departure=None, destination=None, time=0):
+def check_airroute(departure_id, destination_id):
+    query = AirRoute.query.filter(AirRoute.departure_id == departure_id)
+    query = query.filter(AirRoute.destination_id == destination_id)
+    query = query.all()
+    if query:
+        return False
+    else:
+        return True
+
+
+def get_flight(departure=None, destination=None, time=None):
     query = Flight.query.filter()
-    if departure and destination:
+    if departure or destination:
         id = get_airroute_id_by_name(departure, destination)
         query = query.filter(Flight.air_route_id.__eq__(id))
     if time:
-        query = query.join(Schedule, Flight.id == Schedule.id).filter(Schedule.time >= time)
+        query = query.join(Schedule, Flight.id == Schedule.id).filter(Schedule.time.contains(time))
     return query.all()
 
 
 def get_flight_by_id(id):
     return Flight.query.get(id)
 
-
-def get_flight_time_by_id(id):
-    q = Schedule.query.get(id)
-    return q
 
 
 def get_stopover_by_airroute_id(id):
@@ -69,6 +77,7 @@ def get_customer_by_paper(s):
     else:
         return None
 
+
 def get_remaining_seat(f_id, sclass):
     num_o_ticket = Ticket.query.filter(Ticket.flight_id == f_id).filter(Ticket.seat_class == sclass).count()
     flight = get_flight_by_id(id=f_id)
@@ -77,6 +86,7 @@ def get_remaining_seat(f_id, sclass):
     else:
         num_o_seat = flight.schedule[0].num_o_Sseat
     return num_o_seat - num_o_ticket
+
 
 def update_seat(f, quantity, sclass):
     if sclass == 1:
@@ -126,7 +136,7 @@ def get_customer_by_name_and_dob(Fname, Lname, dob):
     query = User.query.join(Customer, Customer.id == User.id) \
         .filter(User.Lname.contains(Lname)) \
         .filter(User.Fname.contains(Fname)) \
-        .filter(User.DOB == dob).first()
+        .filter(User.DOB.contains(dob)).first()
     if query:
         return query.id
     else:
@@ -175,7 +185,7 @@ def ticket_first_class_stat(month=None, year=None):
 
 
 def ticket_second_class_stat(month=None, year=None):
-    query = db.session.query(AirRoute.id, func.count(Ticket.id), (func.count(Ticket.id) * TicketPrice.Sprice)) \
+    query = db.session.query(AirRoute.id,func.count(Ticket.id), (func.count(Ticket.id) * TicketPrice.Sprice)) \
         .join(Flight, Flight.air_route_id == AirRoute.id, isouter=True) \
         .join(TicketPrice, TicketPrice.id == Flight.price_id, isouter=True) \
         .join(Ticket, Ticket.flight_id == Flight.id, isouter=True) \
@@ -190,22 +200,19 @@ def ticket_second_class_stat(month=None, year=None):
     return query.all()
 
 
-def ticket_amount_stat(month=None, year=None):
-    query = db.session.query(AirRoute.id, AirRoute.name, func.count(Flight.id), func.count(Ticket.id)) \
-        .join(Flight, Flight.air_route_id == AirRoute.id, isouter=True) \
-        .join(Ticket, Ticket.flight_id == Flight.id, isouter=True) \
-        .group_by(AirRoute.id)
+def air_route_tuple():
+    query = db.session.query(AirRoute.id, AirRoute.name) \
+            .group_by(AirRoute.id)
+    return query.all()
 
-    if month:
-        query = query.filter(func.month(Ticket.sold_time) == month)
-    if year:
-        query = query.filter(func.year(Ticket.sold_time) == year)
 
+def air_route_id_tuple():
+    query = db.session.query(AirRoute.id)
     return query.all()
 
 
 def flight_stat_by_air_route(month=None, year=None):
-    query = db.session.query(AirRoute.id, AirRoute.name, func.count(Flight.id)) \
+    query = db.session.query(AirRoute.id, func.count(Flight.id)) \
         .join(Flight, AirRoute.id == Flight.air_route_id, isouter=True) \
         .join(Schedule, Flight.id == Schedule.id, isouter=True) \
         .group_by(AirRoute.id)
@@ -237,7 +244,11 @@ def asign_to_temp(list):
 
 
 def combine_ticket_income_stats(Fclass_stat, Sclass_stat):
-    total = asign_to_temp(convert_to_list_of_list(Fclass_stat))
+    total = convert_to_list_of_list(air_route_id_tuple())
+
+    for i in range(0, len(total)):
+        for j in range(0, 2):
+            total[i].append(0)
 
     for i in range(0, len(total)):
         for j in range(0, len(Sclass_stat)):
@@ -245,61 +256,42 @@ def combine_ticket_income_stats(Fclass_stat, Sclass_stat):
                 total[i][1] += Sclass_stat[j][1]
                 total[i][2] += Sclass_stat[j][2]
 
-    flag = True
-    temp = []
-    for j in range(0, len(Sclass_stat)):
-        flag = True
-        index = 0
-        for i in range(0, len(total)):
-            if (Sclass_stat[j][0] != total[i][0]):
-                flag = False
-                index = j
-            else:
-                flag = True
-                break
-        if not flag:
-            temp.append(list(Sclass_stat[index]))
-
-    for i in range(0, len(temp)):
-        total.append(temp[i])
+    for i in range(0, len(total)):
+        for j in range(0, len(Fclass_stat)):
+            if (Fclass_stat[j][0] == total[i][0]):
+                total[i][1] += Fclass_stat[j][1]
+                total[i][2] += Fclass_stat[j][2]
 
     return total
 
 
-def add_ticket_stat(ticket_income_total, flight_stats):
-    total = asign_to_temp(convert_to_list_of_list(flight_stats))
+def add_ticket_stat(ticket_income_total=None, flight_stats=None, airroute_tuple=None):
+    airroute_tuple = convert_to_list_of_list(airroute_tuple)
+    for i in range(0, len(airroute_tuple)):
+        for j in range(0, 3):
+            airroute_tuple[i].append(0)
 
-    for i in range(0, len(total)):
-        for j in range(0, 2):
-            total[i].append(0)
-
-    for i in range(0, len(total)):
+    for i in range(0, len(airroute_tuple)):
         for j in range(0, len(ticket_income_total)):
-            if (total[i][0] == ticket_income_total[j][0]):
-                total[i][3] = ticket_income_total[j][1]
-                total[i][4] = ticket_income_total[j][2]
-    return total
+            if (airroute_tuple[i][0] == ticket_income_total[j][0]):
+                airroute_tuple[i][2] = ticket_income_total[j][1]
+                airroute_tuple[i][3] = ticket_income_total[j][2]
+
+    for i in range(0, len(airroute_tuple)):
+        for j in range(0, len(flight_stats)):
+            if (airroute_tuple[i][0] == flight_stats[j][0]):
+                airroute_tuple[i][4] = flight_stats[j][1]
+    return convert_to_list_of_tuple(airroute_tuple)
 
 
 def get_total_income(total_stat):
     sum = 0
     for i in range(0, len(total_stat)):
-        sum += total_stat[i][4]
+        sum += total_stat[i][3]
 
     if sum == 0:
         sum = 1
     return sum
-
-
-# def update_remaining_seat(flight_id, sclass):
-#     flight = Flight.query.get(flight_id)
-#     if sclass == 1:
-#         flight.schedule[0].num_o_Fseat += 1
-#     else:
-#         flight.schedule[0].num_o_Sseat += 1
-#     db.session.add(flight)
-#     db.session.commit()
-#     return True
 
 
 def updateTicket(flight_id, ticket_id):
@@ -382,4 +374,21 @@ if __name__ == "__main__":
         # print(update_remaining_seat(1, 1))
 
         # print(create_ticket(owner_id=4, sclass=1, flight=2, buyer_id=4, seller_id=2))
-        print(get_remaining_seat(f_id=10, sclass=2))
+        # print(get_remaining_seat(f_id=10, sclass=2))
+        # print(flight_stat_by_air_route())
+        # Fclass_ticket_stat = ticket_first_class_stat(month=9, year=2022)
+        # print(Fclass_ticket_stat)
+        # Sclass_ticket_stat = ticket_second_class_stat(month=9, year=2022)
+        # print(Sclass_ticket_stat)
+        # flight_stat = flight_stat_by_air_route(month=10, year=2023)
+        # air_route_tuple =air_route_tuple()
+        #
+        # ticket_income_total = convert_to_list_of_tuple(
+        #     combine_ticket_income_stats(Fclass_stat=Fclass_ticket_stat, Sclass_stat=Sclass_ticket_stat))
+        #
+        # total_stat = convert_to_list_of_tuple(
+        #     add_ticket_stat(flight_stats=flight_stat, ticket_income_total=ticket_income_total,
+        #                              airroute_tuple=air_route_tuple))
+        # print(total_stat)
+        # print(get_customer_by_name_and_dob(Fname='Huy', Lname='NV', dob=datetime.now()))
+        # print(get_airroute_id_by_name(departure='Da Nang', destination=None))

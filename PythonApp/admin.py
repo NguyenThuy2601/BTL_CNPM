@@ -40,7 +40,6 @@ class AirPortView(AuthModelView):
     form_columns = ('name', 'location')
 
 
-
 class AirRouteView(AuthModelView):
     # //column_list = []
     column_searchable_list = ['name']
@@ -50,7 +49,6 @@ class AirRouteView(AuthModelView):
     form_columns = ('name', 'departure', 'destination', 'stop_over', 'rule')
 
     def update_model(self, form, model):
-
         if len(form.stop_over.data) <= getRule(form.rule.data.id):  # kiem tra dung luat chua
             model.departure_id = form.departure.data.id
             model.destination_id = form.destination.data.id
@@ -80,20 +78,23 @@ class AirRouteView(AuthModelView):
             flash(gettext('Quá số lượng sân bay quá cảnh theo quy định'), 'error')
 
     def create_model(self, form):
-        if len(form.stop_over.data) <= getRule(form.rule.data.id):
-            new_ar = AirRoute(name=form.name.data, departure_id=form.departure.data.id,
-                              destination_id=form.destination.data.id,
-                              rule_id=form.rule.data.id)
-            db.session.add(new_ar)
-            db.session.commit()
-            for i in form.stop_over.data:
-                stopover = StopOver.query.get(i)
-                stopover.airroute_id = new_ar.id
-                db.session.add(stopover)
+        if LoadData.check_airroute(departure_id=form.departure.data.id, destination_id=form.destination.data.id):
+            if len(form.stop_over.data) <= getRule(form.rule.data.id):
+                new_ar = AirRoute(name=form.name.data, departure_id=form.departure.data.id,
+                                  destination_id=form.destination.data.id,
+                                  rule_id=form.rule.data.id)
+                db.session.add(new_ar)
                 db.session.commit()
-            return True
+                for i in form.stop_over.data:
+                    stopover = StopOver.query.get(i)
+                    stopover.airroute_id = new_ar.id
+                    db.session.add(stopover)
+                    db.session.commit()
+                return True
+            else:
+                flash(gettext('Quá số lượng sân bay quá cảnh theo quy định'), 'error')
         else:
-            flash(gettext('Quá số lượng sân bay quá cảnh theo quy định'), 'error')
+            flash(gettext('Tuyến bay đã tồn tại'), 'error')
 
 
 class StatsView(AuthView):
@@ -105,17 +106,17 @@ class StatsView(AuthView):
         Fclass_ticket_stat = LoadData.ticket_first_class_stat(month=month, year=year)
         Sclass_ticket_stat = LoadData.ticket_second_class_stat(month=month, year=year)
         flight_stat = LoadData.flight_stat_by_air_route(month=month, year=year)
-        ticket_amount_stat = LoadData.ticket_amount_stat(month=month, year=year)
+        air_route_tuple= LoadData.air_route_tuple()
 
         ticket_income_total = LoadData.convert_to_list_of_tuple(
             LoadData.combine_ticket_income_stats(Fclass_stat=Fclass_ticket_stat, Sclass_stat=Sclass_ticket_stat))
 
         total_stat = LoadData.convert_to_list_of_tuple(
-            LoadData.add_ticket_stat(flight_stats=flight_stat, ticket_income_total=ticket_income_total))
+            LoadData.add_ticket_stat(flight_stats=flight_stat, ticket_income_total=ticket_income_total, airroute_tuple=air_route_tuple))
 
         total_income = LoadData.get_total_income(total_stat=total_stat)
 
-        return self.render('admin/stats.html', stats= total_stat, sum=total_income, current_year=datetime.year)
+        return self.render('admin/stats.html', stats=total_stat, sum=total_income, current_year=datetime.year)
 
 
 class LogoutView(AuthView):

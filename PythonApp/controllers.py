@@ -47,7 +47,8 @@ def details(flight_id):
                 err_msg = 'Số lượng vé mua vượt quá số lượng vé còn'
         else:
             err_msg = 'Đã quá thời gian mua vé'
-    return render_template('details.html', flight=f, stopover=st, Fseat_num=Fseat_num, Sseat_num=Sseat_num ,err_msg=err_msg)
+    return render_template('details.html', flight=f, stopover=st, Fseat_num=Fseat_num, Sseat_num=Sseat_num,
+                           err_msg=err_msg)
 
 
 def ticket(Adult, Child, f_id, sclass):
@@ -99,7 +100,7 @@ def ticket(Adult, Child, f_id, sclass):
                 user1 = LoadData.get_customer_by_name_and_dob(adult_Fname[i], adult_Lname[i], adult_DOB[i])
                 if user1:
                     LoadData.update_phone_number(adult_phone[i], user1)
-                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass,flight_id=f_id, buyer_id=buyer,
+                    ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight_id=f_id, buyer_id=buyer,
                                                     seller_id=current_user.id)
                     LoadData.create_id_paper(adult_pp[i], models.Papers.from_str(pp_type[i]), user1)
                     TicketList.append(ticket)
@@ -118,7 +119,8 @@ def ticket(Adult, Child, f_id, sclass):
                 user1 = LoadData.get_customer_by_paper(child_pp[i])
             if user1:
                 LoadData.update_phone_number(adult_phone[i], user1)
-                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight_id=f_id, buyer_id=buyer, seller_id=2)
+                ticket = LoadData.create_ticket(owner_id=user1, sclass=sclass, flight_id=f_id, buyer_id=buyer,
+                                                seller_id=2)
                 TicketList.append(ticket)
             else:
                 user1 = LoadData.get_customer_by_name_and_dob(child_Fname[i], child_Lname[i], child_DOB[i])
@@ -198,8 +200,11 @@ def searchTicket(flight_id, err_msg=None):
     ticket_id = request.args.get('TicketID')
     ticket = LoadData.get_ticket(ticket_id)
     flight = LoadData.get_flight_by_id(flight_id)
+    remaining_Fseat = LoadData.get_remaining_seat(f_id=flight_id, sclass=1)
+    remaining_Sseat = LoadData.get_remaining_seat(f_id=flight_id, sclass=2)
 
-    return render_template('searchTicket.html', ticket=ticket, f=flight, err_msg=err_msg)
+    return render_template('searchTicket.html', ticket=ticket, f=flight, Fseat=remaining_Fseat, Sseat=remaining_Sseat,
+                           err_msg=err_msg)
 
 
 def updateTicket(flight_id, ticket_id):
